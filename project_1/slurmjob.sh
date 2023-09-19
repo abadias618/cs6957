@@ -3,7 +3,7 @@
 #SBATCH --partition soc-gpu-np
 #SBATCH --ntasks-per-node=32
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:3090:1 
+#SBATCH --gres=gpu:1 
 #SBATCH --time=2:00:00
 #SBATCH --mem=24GB
 #SBATCH --mail-user=u1419615@umail.utah.edu
@@ -14,6 +14,6 @@
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate nlp
 
-OUT_DIR=/scratch/general/vast/u1419615/cs6966/assignment1/models
+OUT_DIR=/scratch/general/vast/u1419615/cs6957/assignment1/models
 mkdir -p ${OUT_DIR}
 python main.py --output_dir ${OUT_DIR} 
