@@ -6,15 +6,24 @@ from cbow import *
 
 vocab = get_word2ix("./vocab.txt")
 inverse_vocab = {v: k for k, v in vocab.items()}
-
+window = 2
 print("\nexample vocab",{k: vocab[k] for k in list(vocab)[:5]},"\n")
 files = get_files("./data/train")
 print("files in dir",files[0],"\n")
-data = process_data(files[0:5], 2, vocab)
-print("data:",len(data[0]),len(data[1]),len(data[2]),len(data[3]),len(data[4]))
+vectors = process_data(files[0:5], window, vocab)
+print("data:",len(vectors[0]),len(vectors[1]),len(vectors[2]),len(vectors[3]),len(vectors[4]))
+def vec2data(vecs, window):
+    df = []
+    for v in vecs:
+        for i in range(window, len(v) - window):
+            words = v[i - window:i] + v[i:i + window]
+            df.append((words, v[i]))
+    return df
+data = vec2data(vectors, window)
+
 
 vocab_size = len(list(vocab.keys()))
-embedding_dim = len(data[0])
+embedding_dim = 30
 print(f"vocab_size: {vocab_size}, embedding_size: {embedding_dim}")
 
 
