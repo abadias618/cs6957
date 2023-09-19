@@ -16,14 +16,14 @@ def vec2data(vecs, window):
     df = []
     for v in vecs:
         for i in range(window, len(v) - window):
-            words = v[i - window:i] + v[i:i + window]
+            words = v[i - window:i] + v[i + 1:i + window]
             df.append((words, v[i]))
     return df
 data = vec2data(vectors, window)
 
 
 vocab_size = len(list(vocab.keys()))
-embedding_dim = 30
+embedding_dim = 5
 print(f"vocab_size: {vocab_size}, embedding_size: {embedding_dim}")
 
 
@@ -34,14 +34,15 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 print(make_sentence_vector(['stormy','nights','when','the'], vocab))
 
 #train
-for epoch in range(1):
+for epoch in range(50):
     epoch_loss = 0
     for sentence, target in data:
         model.zero_grad()
-        sentence_vector = make_sentence_vector(sentence, vocab)  
+        #sentence_vector = make_sentence_vector(sentence, vocab)  
+        sentence_vector = torch.tensor(sentence)
         log_probs = model(sentence_vector)
         loss = loss_function(log_probs, torch.tensor(
-        [vocab[target]], dtype=torch.long))
+        [target], dtype=torch.long))
         loss.backward()
         optimizer.step()
         epoch_loss += loss.data
