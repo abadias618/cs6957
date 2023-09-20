@@ -13,7 +13,7 @@ WINDOW = 5
 #print("\nexample vocab",{k: vocab[k] for k in list(vocab)[:5]},"\n")
 files = get_files("./data/train")
 #print("files in dir",files[0],"\n")
-vectors = process_data(files[0:2], WINDOW, vocab)
+vectors = process_data(files, WINDOW, vocab)
 print("vectors length:",len(vectors))
 #print("\ndata example lengths:",len(vectors[0]),len(vectors[1]))#,len(vectors[2]))
 def vec2data(vecs, win):
@@ -48,7 +48,7 @@ for lr in [0.01, 0.001, 0.0001]:
     optimizer = torch.optim.SGD(model.parameters(), lr=lr)
     overall_loss = float('inf')
     #train
-    for epoch in range(1):
+    for epoch in range(10):
         with tqdm(dataloader) as tepoch:
             
             for sentence, target in tepoch:
