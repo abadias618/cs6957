@@ -64,6 +64,7 @@ for lr in [0.01, 0.001, 0.0001]:
             print('Epoch# '+str(epoch)+' - Loss: ' + str(loss.item()))
             if loss < overall_loss:
                 overall_loss = loss
+                print("OVERALL_LOSS:",overall_loss)
                 if os.path.exists("./embeddings.txt"):
                     os.remove("embeddings.txt")
                 with open("embeddings.txt","w") as f:
