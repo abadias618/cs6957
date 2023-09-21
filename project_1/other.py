@@ -61,7 +61,7 @@ for t in ex_b:
 
 #ex_3a
 ex_3a = [[("early","late"),("secrets","chase")],
-         [("building","build"),("detroy","truly")] 
+         [("building","build"),("destroy","truly")] 
         ]
 for t in ex_3a:
     A_1 = data[vocab[t[0][0]]]
@@ -94,5 +94,28 @@ for t in ex_3b:
             most_sim = sim
             res = np.where(data == row)[0][0]
     print(f"{t[1]}",res,list(vocab.keys())[res])
+
+import matplotlib.pyplot as plt
+
+from sklearn.decomposition import PCA
+extra = ["horse", "cat", "dog", "i", "he", "she", "it", "her", "his", "our", "we", "in", "on",
+"from", "to", "at", "by", "man", "woman", "boy", "girl", "king", "queen", "prince","princess"]
+df = []
+for w in extra:
+    df.append(data[vocab[w]])
+
+pca = PCA(n_components=2)
+X = pca.fit(df).transform(df)
+#3plt.scatter([x[0] for x in df], [x[1] for x in df])
+#print(X)
+#plt.savefig('2D.png')
         
+z = [x[0] for x in df]
+y = [x[1] for x in df]
+fig, ax = plt.subplots()
+ax.scatter(z, y)
+
+for i, txt in enumerate(extra):
+    ax.annotate(txt, (z[i], y[i]))
         
+plt.savefig('2D.png')
