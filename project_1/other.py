@@ -57,8 +57,42 @@ for t in ex_b:
         if sim > most_sim:
             most_sim = sim
             res = np.where(data == row)[0][0]
-    print("\nanswer",res,list(vocab.keys())[res])
-        
-        
+    print(f"{t[1]}",res,list(vocab.keys())[res])
+
+#ex_3a
+ex_3a = [[("early","late"),("secrets","chase")],
+         [("building","build"),("detroy","truly")] 
+        ]
+for t in ex_3a:
+    A_1 = data[vocab[t[0][0]]]
+    B_1 = data[vocab[t[0][1]]]
+    cosine_1 = np.dot(A_1,B_1)/(norm(A_1)*norm(B_1))
+    A_2 = data[vocab[t[1][0]]]
+    B_2 = data[vocab[t[1][1]]]
+    cosine_2 = np.dot(A_2,B_2)/(norm(A_2)*norm(B_2))
+    print(f"{t[0][0]},{t[0][1]} and {t[1][0]},{t[1][1]}")
+    if cosine_1 > cosine_2:
+        print("left pair")
+    elif cosine_2 > cosine_1:
+        print("right pair")
+    else:
+        print("equal")
+ex_3b = [[("tree","plant"),"flower"],
+        [("good","bad"),"white"],
+    ]
+
+for t in ex_3b:
+    w_a = data[vocab[t[0][0]]]
+    w_b = data[vocab[t[0][1]]]
+    w_c = data[vocab[t[1]]]
+    w = (w_b - w_a) + w_c
+    most_sim = float("-inf")
+    res = None
+    for row in data:
+        sim = np.dot(w,row)/(norm(w)*norm(row))
+        if sim > most_sim:
+            most_sim = sim
+            res = np.where(data == row)[0][0]
+    print(f"{t[1]}",res,list(vocab.keys())[res])
         
         
