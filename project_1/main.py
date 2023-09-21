@@ -11,7 +11,7 @@ vocab = get_word2ix("./vocab.txt")
 print("vocab length:",len(vocab.keys()))
 WINDOW = 5
 #print("\nexample vocab",{k: vocab[k] for k in list(vocab)[:5]},"\n")
-files = get_files("./data/train")
+files = get_files("./data/dev")
 #print("files in dir",files[0],"\n")
 vectors = process_data(files, WINDOW, vocab)
 print("vectors length:",len(vectors))
