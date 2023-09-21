@@ -42,11 +42,11 @@ print(f"VOCAB_SIZE: {VOCAB_SIZE}, embedding_size: {EMBEDDING_DIM}")
 
 dataset = TensorDataset(torch.tensor(data), torch.tensor(labels))
 dataloader = DataLoader(dataset, batch_size = 64, shuffle=False)
+overall_loss = float('inf')
 for lr in [0.01, 0.001, 0.0001]:
     model = CBOW(VOCAB_SIZE, EMBEDDING_DIM)
     loss_function = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=lr)
-    overall_loss = float('inf')
+    optimizer = torch.optim.SGD(model.parameters(), lr=lr) 
     #train
     for epoch in range(10):
         with tqdm(dataloader) as tepoch:
@@ -55,7 +55,6 @@ for lr in [0.01, 0.001, 0.0001]:
                 tepoch.set_description(f"Epoch {epoch}")
 
                 model.zero_grad()
-                sentence_vector = sentence
                 log_probs = model(sentence)
                 loss = loss_function(log_probs, target)
                 loss.backward()
@@ -64,7 +63,7 @@ for lr in [0.01, 0.001, 0.0001]:
             print('Epoch# '+str(epoch)+' - Loss: ' + str(loss.item()))
             if loss < overall_loss:
                 overall_loss = loss
-                print("OVERALL_LOSS:",overall_loss)
+                print("OVERALL_BEST_LOSS:",overall_loss)
                 if os.path.exists("./embeddings.txt"):
                     os.remove("embeddings.txt")
                 with open("embeddings.txt","w") as f:
