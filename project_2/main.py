@@ -61,16 +61,17 @@ def main():
             w = w_stack + w_buffer
             print("\nw",w)
             w_emb = glove.get_vecs_by_tokens(w, lower_case_backup=True)
-            print("\nw_emb",w_emb.size)
+            print(w_emb)
+            print("\nw_emb",w_emb.size())
             # mean representation
-            print("\nw_emb",w_emb.mean.size)
+            print("\nw_emb",w_emb.mean.size())
             # concat representation
             
             p = p_stack + p_buffer
             print("\np",p)
             p_emb = torch_emb(p)
-            print("\np_emb",p_emb.size)
-            print("\np_emb",p_emb.mean.size)
+            print("\np_emb",p_emb.size())
+            print("\np_emb",p_emb.mean.size())
             
     print("FINAL\n\n")
         
