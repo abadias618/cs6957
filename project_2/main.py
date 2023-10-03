@@ -70,7 +70,7 @@ def main():
             print("\np",p)
             p = [pos_set_name2idx[tag] for tag in p]
             print("\np num",p)
-            p_emb = torch_emb(torch.FloatTensor([p]))
+            p_emb = torch_emb(torch.FloatTensor(p).to(torch.int64))
             print("\np_emb",p_emb.size())
             print("\np_emb mean",p_emb.mean())
             
