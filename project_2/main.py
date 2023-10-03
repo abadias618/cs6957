@@ -1,9 +1,14 @@
 from scripts import dataloader
 from scripts import state
+import numpy as np
+import random
 import torch
 from torch import nn
 import torchtext
 
+torch.manual_seed(1419615)
+random.seed(1419615)
+np.random.seed(1419615)
 
 def main():
     #load data
@@ -24,10 +29,12 @@ def main():
         data.append([tokens, row[2]])
     #print("data sanity check\n\n",data)
     C_WINDOW = 2
+    NUMBER_OF_POSTAGS = len(pos_set)
+    DIM = 50
     # Glove embeddings
-    glove = torchtext.vocab.GloVe(name="6B", dim=50)
+    glove = torchtext.vocab.GloVe(name="6B", dim=DIM)
     # Torch embeddings
-    torch_emb = nn.Embedding(18, 50)
+    torch_emb = nn.Embedding(NUMBER_OF_POSTAGS, DIM)
     train = []
     for row in data:
         s = state.ParseState([],row[0],[])
@@ -63,17 +70,29 @@ def main():
             w_emb = glove.get_vecs_by_tokens(w, lower_case_backup=True)
             print("\nw_emb",w_emb.size())
             # mean representation
-            print("\nw_emb mean",w_emb.mean())
+            w_emb_mean = torch.mean(w_emb, 0)
+            print("\nw_emb mean",w_emb_mean.size())
             # concat representation
+            w_emb_concat = torch.cat(w_emb, 0)
+            print("\nw_emb cat",w_emb_concat.size())
+
             
             p = p_stack + p_buffer
             print("\np",p)
             p = [pos_set_name2idx[tag] for tag in p]
             print("\np num",p)
-            p_emb = torch_emb(torch.Tensor([p]).to(torch.int64))
+            p_emb = torch_emb(torch.Tensor(p).to(torch.int64))
             print("\np_emb",p_emb.size())
-            print("\np_emb mean",p_emb.mean())
-            
+            # mean representation
+            p_emb_mean = torch.mean(p_emb, 0)
+            print("\np_emb mean",p_emb_mean.size())
+            # concat representation
+            p_emb_concat = torch.cat(p_emb, 0)
+            print("\np_emb cat",p_emb_concat.size())
+
+            # put vecs together
+            print("\nmash",torch.add(w_emb_mean, p_emb_mean).size())
+            train.append(None)
     print("FINAL\n\n")
         
 main()
