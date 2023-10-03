@@ -69,9 +69,9 @@ def main():
             
             p = p_stack + p_buffer
             print("\np",p)
-            p_emb = torch_emb(p)
+            p_emb = torch_emb(torch.Tensor(p))
             print("\np_emb",p_emb.size())
-            print("\np_emb",p_emb.mean().size())
+            print("\np_emb",p_emb.mean())
             
     print("FINAL\n\n")
         
