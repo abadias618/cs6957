@@ -1,6 +1,7 @@
 from scripts import dataloader
 from scripts import state
 import torch
+from torch import nn
 import torchtext
 
 
