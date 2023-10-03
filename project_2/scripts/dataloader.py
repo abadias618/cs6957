@@ -34,18 +34,26 @@ def load_tagset(filename):
     RETURNS list with tagset
     """
     data = []
+    idx2name = {}
+    name2idx = {}
     with open(filename,"r") as file:
-        for line in file:
+        for i, line in enumerate(file):
             data.append(line.strip())
-    return data
+            idx2name[i] = line.strip()
+            name2idx[line.strip()] = i
+    return data, idx2name, name2idx
 
 def load_pos_set(filename):
     """
     RETURNS list with postag set including NULL
     """
     data = []
+    idx2name = {}
+    name2idx = {}
     with open(filename,"r") as file:
-        for line in file:
+        for i, line in enumerate(file):
             data.append(line.strip())
-    return data
+            idx2name[i] = line.strip()
+            name2idx[line.strip()] = i
+    return data, idx2name, name2idx
 

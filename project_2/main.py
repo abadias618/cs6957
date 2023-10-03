@@ -11,9 +11,9 @@ def main():
     #print(complete_data[:2],"\n")
     hidden_data = dataloader.load_hidden("./data/hidden.txt")
     #print(hidden_data[:2],"\n")
-    pos_set = dataloader.load_pos_set("./data/pos_set.txt")
+    pos_set, pos_set_idx2name, pos_set_name2idx = dataloader.load_pos_set("./data/pos_set.txt")
     #print(pos_set,"\n")
-    tagset = dataloader.load_tagset("./data/tagset.txt")
+    tagset, tag_set_idx2name, tag_set_name2idx = dataloader.load_tagset("./data/tagset.txt")
     #print(tagset,"\n")
 
     data = [] #tokens-dependencies-ParseState
@@ -27,7 +27,7 @@ def main():
     # Glove embeddings
     glove = torchtext.vocab.GloVe(name="6B", dim=50)
     # Torch embeddings
-    torch_emb = nn.Embedding(50, C_WINDOW*2)
+    torch_emb = nn.Embedding(C_WINDOW*2, 50)
     train = []
     for row in data:
         s = state.ParseState([],row[0],[])
@@ -61,17 +61,18 @@ def main():
             w = w_stack + w_buffer
             print("\nw",w)
             w_emb = glove.get_vecs_by_tokens(w, lower_case_backup=True)
-            print(w_emb)
             print("\nw_emb",w_emb.size())
             # mean representation
-            print("\nw_emb",w_emb.mean())
+            print("\nw_emb mean",w_emb.mean())
             # concat representation
             
             p = p_stack + p_buffer
             print("\np",p)
+            p = [pos_set_name2idx[tag] for tag in p]
+            print("\np num",p)
             p_emb = torch_emb(torch.Tensor(p))
             print("\np_emb",p_emb.size())
-            print("\np_emb",p_emb.mean())
+            print("\np_emb mean",p_emb.mean())
             
     print("FINAL\n\n")
         
