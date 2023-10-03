@@ -27,7 +27,7 @@ def main():
     # Glove embeddings
     glove = torchtext.vocab.GloVe(name="6B", dim=50)
     # Torch embeddings
-    torch_emb = nn.Embedding(C_WINDOW*2, 50)
+    torch_emb = nn.Embedding(18, 50)
     train = []
     for row in data:
         s = state.ParseState([],row[0],[])
