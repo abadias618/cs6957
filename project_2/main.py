@@ -127,20 +127,20 @@ def main():
     dataset_concat = TensorDataset(torch.stack(train_concat), torch.tensor(labels))
     dataloader_concat = DataLoader(dataset_concat, batch_size = 64, shuffle=False)
     print("FINALIZED DATA CREATION\n\n")
-    model_mean = Parser(torch_emb, DIM, NUMBER_OF_ACTIONS)
-    model_concat = Parser(torch_emb, DIM, NUMBER_OF_ACTIONS)
+    model_mean = Parser(torch_emb_labels, DIM, NUMBER_OF_ACTIONS)
+    model_concat = Parser(torch_emb_labels, DIM, NUMBER_OF_ACTIONS)
 
     loss_function = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model_mean.parameters(), lr=0.001) 
-    for epoch in range(1):
+    for epoch in range(20):
         with tqdm(dataloader_mean) as tepoch:
             for vector, target in tepoch:
-                print("\n vector and target", vector.size(), target.size())
+                #print("\n vector and target", vector.size(), target.size())
                 tepoch.set_description(f"Epoch {epoch}")
 
                 model_mean.zero_grad()
                 log_probs = model_mean(vector)
-                print(f"log_probs {log_probs.size()}")
+                #print(f"log_probs {log_probs.size()}")
                 loss = loss_function(log_probs, target)
                 loss.backward()
                 optimizer.step()
