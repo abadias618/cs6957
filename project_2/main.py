@@ -15,7 +15,7 @@ np.random.seed(1419615)
 
 def main():
     #load data
-    complete_data = dataloader.load_data("./data/train.txt")
+    complete_data = dataloader.load_data("./data/dev.txt")
     #print(complete_data[:2],"\n")
     pos_set, pos_set_idx2name, pos_set_name2idx = dataloader.load_pos_set("./data/pos_set.txt")
     #print(pos_set,"\n")
@@ -123,7 +123,7 @@ def main():
     dataloader_mean = DataLoader(dataset_mean, batch_size = 64, shuffle=False)
 
     dataset_concat = TensorDataset(torch.stack(train_concat), torch.tensor(labels))
-    dataloader_concat = DataLoader(dataset_concat, batch_size = 64, shuffle=False)
+    dataloader_concat = DataLoader(dataset_concat, batch_size = 128, shuffle=False)
     print("FINALIZED DATA CREATION\n\n")
     model_mean = Parser(torch_emb_labels, DIM, NUMBER_OF_ACTIONS)
     print("MODEL CREATED\n",model_mean)
