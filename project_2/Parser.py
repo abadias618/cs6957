@@ -10,7 +10,7 @@ class Parser(torch.nn.Module):
         self.linear2 = nn.Linear(200, actions)
 
         self.activation_function1 = nn.ReLU()
-        self.activation_function2 = nn.Softmax()
+        self.activation_function2 = nn.Softmax(dim=-1)
 
     def forward(self, inputs):
         out = self.linear1(inputs)
