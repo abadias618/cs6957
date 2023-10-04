@@ -109,10 +109,10 @@ def main():
             train_mean.append(torch.add(w_emb_mean, p_emb_mean))
             train_concat.append(torch.add(w_emb_concat, p_emb_concat))
     print(f"labels {len(labels)}, train_mean {len(train_mean)}, train_concat {len(train_concat)}\n\n")
-    dataset_mean = TensorDataset(train_mean, labels)
+    dataset_mean = TensorDataset(torch.stack(train_mean), torch.stack(labels))
     dataloader_mean = DataLoader(dataset_mean, batch_size = 64, shuffle=False)
 
-    dataset_concat = TensorDataset(train_concat, labels)
+    dataset_concat = TensorDataset(torch.stack(train_concat), torch.stack(labels))
     dataloader_concat = DataLoader(dataset_concat, batch_size = 64, shuffle=False)
     print("FINALIZED DATA CREATION\n\n")
     model_mean = Parser(torch_emb, DIM, NUMBER_OF_ACTIONS)
