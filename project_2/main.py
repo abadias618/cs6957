@@ -42,8 +42,8 @@ def main():
     train_mean, train_concat, labels = prepare_vectors_for_training(data, tagset=tagset,
                                                        C_WINDOW=C_WINDOW, glove=glove,
                                                        torch_emb=torch_emb,
-                                                       pos_set_name2idx=pos_set_idx2name,
-                                                       tag_set_name2idx=tag_set_idx2name)
+                                                       pos_set_name2idx=pos_set_name2idx,
+                                                       tag_set_name2idx=tag_set_name2idx)
     #READY DATA
     dataset_mean = TensorDataset(torch.stack(train_mean), torch.tensor(labels))
     dataloader_mean = DataLoader(dataset_mean, batch_size = 64, shuffle=False)
