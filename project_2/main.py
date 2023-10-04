@@ -1,10 +1,13 @@
 from scripts import dataloader
 from scripts import state
+from Parser import *
 import numpy as np
 import random
 import torch
+from torch.utils.data import DataLoader, TensorDataset
 from torch import nn
 import torchtext
+from tqdm import tqdm
 
 torch.manual_seed(1419615)
 random.seed(1419615)
@@ -30,12 +33,15 @@ def main():
     #print("data sanity check\n\n",data)
     C_WINDOW = 2
     NUMBER_OF_POSTAGS = len(pos_set)
+    NUMBER_OF_ACTIONS = len(tagset)
     DIM = 50
     # Glove embeddings
     glove = torchtext.vocab.GloVe(name="6B", dim=DIM)
     # Torch embeddings
     torch_emb = nn.Embedding(NUMBER_OF_POSTAGS, DIM)
-    train = []
+    train_mean = []
+    train_concat = []
+    labels = []
     for row in data:
         s = state.ParseState([],row[0],[])
         #print("row[1] sanity check\n\n", row[1])
@@ -66,40 +72,64 @@ def main():
             p_buffer = state.pad(p_buffer, C_WINDOW, "postag")
 
             w = w_stack + w_buffer
-            print("\nw",w)
+            #print("\nw",w)
             w_emb = glove.get_vecs_by_tokens(w, lower_case_backup=True)
-            print("\nw_emb",w_emb.size())
+            #print("\nw_emb",w_emb.size())
             # mean representation
             w_emb_mean = torch.mean(w_emb, 0)
-            print("\nw_emb mean",w_emb_mean.size())
+            #print("\nw_emb mean",w_emb_mean.size())
             # concat representation
             w_emb_concat = w_emb[0]
             for i in range(1,len(w_emb)):
                 w_emb_concat = torch.cat((w_emb_concat, w_emb[i]),0)
             
-            print("\nw_emb cat",w_emb_concat.size())
+            #print("\nw_emb cat",w_emb_concat.size())
 
             
             p = p_stack + p_buffer
-            print("\np",p)
+            #print("\np",p)
             p = [pos_set_name2idx[tag] for tag in p]
-            print("\np num",p)
+            #print("\np num",p)
             p_emb = torch_emb(torch.Tensor(p).to(torch.int64))
-            print("\np_emb",p_emb.size())
+            #print("\np_emb",p_emb.size())
             # mean representation
             p_emb_mean = torch.mean(p_emb, 0)
-            print("\np_emb mean",p_emb_mean.size())
+            #print("\np_emb mean",p_emb_mean.size())
             # concat representation
-            p_emb = torch.flatten(p_emb, start_dim=1)
-            print("\nFlat",p_emb.size())
             p_emb_concat = p_emb[0]
             for i in range(1,len(p_emb)):
                 p_emb_concat = torch.cat((p_emb_concat, p_emb[i]),0)
-            print("\np_emb cat",p_emb_concat.size())
+            #print("\np_emb cat",p_emb_concat.size())
 
             # put vecs together
-            print("\nmash",torch.add(w_emb_mean, p_emb_mean).size())
-            train.append(None)
-    print("FINAL\n\n")
-        
+            #print("\nmash",torch.add(w_emb_mean, p_emb_mean).size())
+
+            labels.append(torch_emb(torch.Tensor(tag_set_name2idx[action]).to(torch.int64)))
+            train_mean.append(torch.add(w_emb_mean, p_emb_mean))
+            train_concat.append(torch.add(w_emb_concat, p_emb_concat))
+    print(f"labels {len(labels)}, train_mean {len(train_mean)}, train_concat {len(train_concat)}\n\n")
+    dataset_mean = TensorDataset(torch.tensor(data), torch.tensor(labels))
+    dataloader_mean = DataLoader(dataset_mean, batch_size = 64, shuffle=False)
+
+    dataset_concat = TensorDataset(torch.tensor(data), torch.tensor(labels))
+    dataloader_concat = DataLoader(dataset_concat, batch_size = 64, shuffle=False)
+    print("FINALIZED DATA CREATION\n\n")
+    model_mean = Parser(torch_emb, DIM, NUMBER_OF_ACTIONS)
+    model_concat = Parser(torch_emb, DIM, NUMBER_OF_ACTIONS)
+
+    loss_function = nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model_mean.parameters(), lr=0.001) 
+    for epoch in range(1):
+        with tqdm(dataloader) as tepoch:
+            for vector, target in tepoch:
+                tepoch.set_description(f"Epoch {epoch}")
+
+                model_mean.zero_grad()
+                log_probs = model_mean(vector)
+                loss = loss_function(log_probs, target)
+                loss.backward()
+                optimizer.step()
+                tepoch.set_postfix(loss=loss.item())
+            print('Epoch# '+str(epoch)+' - Loss: ' + str(loss.item()))   
+    print("FINALIZED training\n\n",model_mean)
 main()
