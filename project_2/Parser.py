@@ -17,6 +17,7 @@ class Parser(torch.nn.Module):
         out = self.activation_function1(out)    
         out = self.linear2(out)
         out = self.activation_function2(out)
+        return out
     
     def get_word_emdedding(self, vocab, word):
         word = torch.LongTensor([vocab[word]])
