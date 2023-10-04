@@ -118,11 +118,18 @@ def main():
             pred = model_mean(torch.add(w_emb_mean, p_emb_mean))
             pred_text = tag_set_idx2name[round(np.argmax(pred.data.numpy()))]
 
-            action = model_mean()
+            action = pred_text
 
             if action not in tagset:
                 raise Exception()
-            
+            #check for action validity
+            if not state.is_action_valid(s, action):
+                sorted_probs = pred.data.numpy().sort()
+                for a in sorted_probs:
+                    action = "SHIFT"
+                    if state.is_action_valid(s, tag_set_idx2name[round(a)]):
+                        action =  tag_set_idx2name[round(a)]
+                        break
             a = action.split("_")
             
             if  len(a) > 1:

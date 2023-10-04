@@ -60,3 +60,4 @@ def prepare_vectors_for_training(raw_data, tagset, C_WINDOW, glove, torch_emb, p
 
 def get_vectors():
     return
+

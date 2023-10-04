@@ -101,3 +101,13 @@ def pad(vec: list, cwindow: int, type: str) -> list:
             counter -= 1
     
     return padded_vec
+
+def is_action_valid(state: ParseState, action: str):
+    a = action.split("_")
+    if  len(a) > 1:  
+        if len(state.stack) < 2:
+            return False
+    else:
+        if len(state.parse_buffer) < 1:
+            return False
+    return True
