@@ -109,6 +109,7 @@ def main():
             train_mean.append(torch.add(w_emb_mean, p_emb_mean))
             train_concat.append(torch.add(w_emb_concat, p_emb_concat))
     print(f"labels {len(labels)}, train_mean {len(train_mean)}, train_concat {len(train_concat)}\n\n")
+    print(f"stacked train {torch.stack(train_mean).size()}, stacked labels {torch.stack(labels).size()}")
     dataset_mean = TensorDataset(torch.stack(train_mean), torch.stack(labels))
     dataloader_mean = DataLoader(dataset_mean, batch_size = 64, shuffle=False)
 
@@ -128,6 +129,7 @@ def main():
 
                 model_mean.zero_grad()
                 log_probs = model_mean(vector)
+                print(f"log_probs {log_probs.size()}")
                 loss = loss_function(log_probs, target)
                 loss.backward()
                 optimizer.step()
