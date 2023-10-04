@@ -142,7 +142,7 @@ def main():
                 log_probs = model_mean(vector)
                 #print(f"log_probs {log_probs.size()}")
                 loss = loss_function(log_probs, target)
-                loss.backward()
+                loss.backward(retain_graph=True)
                 optimizer.step()
                 tepoch.set_postfix(loss=loss.item())
             print('Epoch# '+str(epoch)+' - Loss: ' + str(loss.item()))   
