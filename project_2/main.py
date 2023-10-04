@@ -39,6 +39,7 @@ def main():
     glove = torchtext.vocab.GloVe(name="6B", dim=DIM)
     # Torch embeddings
     torch_emb = nn.Embedding(NUMBER_OF_POSTAGS, DIM)
+    torch_emb_labels = nn.Embedding(NUMBER_OF_ACTIONS, DIM)
     train_mean = []
     train_concat = []
     labels = []
@@ -103,8 +104,8 @@ def main():
 
             # put vecs together
             #print("\nmash",torch.add(w_emb_mean, p_emb_mean).size())
-            print("label",torch_emb(torch.Tensor([tag_set_name2idx[action]]).to(torch.int64)),tag_set_name2idx[action])
-            labels.append(torch_emb(torch.Tensor([tag_set_name2idx[action]]).to(torch.int64)))
+            #print("label",torch_emb_labels(torch.Tensor([tag_set_name2idx[action]]).to(torch.int64)),tag_set_name2idx[action])
+            labels.append(torch_emb_labels(torch.Tensor([tag_set_name2idx[action]]).to(torch.int64)))
             train_mean.append(torch.add(w_emb_mean, p_emb_mean))
             train_concat.append(torch.add(w_emb_concat, p_emb_concat))
     print(f"labels {len(labels)}, train_mean {len(train_mean)}, train_concat {len(train_concat)}\n\n")
