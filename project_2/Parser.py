@@ -13,8 +13,11 @@ class Parser(torch.nn.Module):
         self.activation_function2 = nn.Softmax(dim=-1)
 
     def forward(self, inputs):
-        out = self.linear1(inputs)
-        out = self.activation_function1(out)    
+        #out = self.linear1(inputs)
+        #out = self.activation_function1(out)    
+        #out = self.linear2(out)
+        #out = self.activation_function2(out)
+        out = self.activation_function1(inputs)
         out = self.linear2(out)
         out = self.activation_function2(out)
         return out
