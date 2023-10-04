@@ -106,11 +106,9 @@ def is_action_valid(state: ParseState, action: str):
     a = action.split("_")
     
     if  len(a) > 1:
-        print("REDUCE",a, len(state.stack))
         if len(state.stack) < 2:
             return False
     else:
-        print("SHIFT",a, len(state.parse_buffer))
         if len(state.parse_buffer) < 1:
             return False
     return True

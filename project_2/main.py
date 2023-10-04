@@ -124,22 +124,19 @@ def main():
                 raise Exception()
             #check for action validity
             if not state.is_action_valid(s, action):
-                print("entered not valid chunk because of",action)
-                #print(pred.data.numpy())
-                #print(np.sort(pred.data.numpy()))
+                #print("entered not valid chunk because of",action)
 
                 sorted_probs = np.sort(pred.data.numpy())[::-1]
                 for i in range(1,len(sorted_probs)): # 1 start bc we already checked argmax before
-                    print("try with:",tag_set_idx2name[i])
                     if state.is_action_valid(s, tag_set_idx2name[i]):
                         action =  tag_set_idx2name[i]
-                        print("success with:",action)
                         break
-            else:
-                print("valid action", action)
 
             if not state.is_action_valid(s, action):
                 print("\n\n couldn't find a viable action")
+                print("\nSo far the relations are:\n",[x.label for x in s.dependencies])
+                print("FINISHED")
+                break
             a = action.split("_")
             
             if  len(a) > 1:
@@ -149,5 +146,5 @@ def main():
                     state.right_arc(s, action)
             else:
                 state.shift(s)
-
+    print("MAIN FINISHED")
 main()
