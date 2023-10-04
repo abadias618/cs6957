@@ -115,6 +115,9 @@ def main():
     print(f"stacked train {torch.stack(train_mean).size()}, stacked labels {torch.stack(labels,-1).size()}")
     print(f"stacked train {torch.stack(train_mean).size()}, stacked labels {torch.stack(labels, 0).size()}")
     print(f"stacked train {torch.stack(train_mean).size()}, stacked labels {torch.stack(labels, 1).size()}")
+    print(f"stacked train {torch.stack(train_mean).size()}, stacked labels {torch.cat(labels, -1).size()}")
+    print(f"stacked train {torch.stack(train_mean).size()}, stacked labels {torch.cat(labels, 0).size()}")
+    print(f"stacked train {torch.stack(train_mean).size()}, stacked labels {torch.cat(labels, 1).size()}")
     dataset_mean = TensorDataset(torch.stack(train_mean), torch.stack(labels))
     dataloader_mean = DataLoader(dataset_mean, batch_size = 64, shuffle=False)
 
