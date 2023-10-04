@@ -126,6 +126,7 @@ def main():
     dataloader_concat = DataLoader(dataset_concat, batch_size = 64, shuffle=False)
     print("FINALIZED DATA CREATION\n\n")
     model_mean = Parser(torch_emb_labels, DIM, NUMBER_OF_ACTIONS)
+    print("MODEL CREATED\n",model_mean)
     model_concat = Parser(torch_emb_labels, DIM, NUMBER_OF_ACTIONS)
 
     loss_function = nn.CrossEntropyLoss()
@@ -143,7 +144,7 @@ def main():
                 optimizer.step()
                 tepoch.set_postfix(loss=loss.item())
             print('Epoch# '+str(epoch)+' - Loss: ' + str(loss.item()))   
-    print("FINALIZED training\n\n",model_mean)
+    print("FINALIZED training\n\n")
     pred = model_mean(train_mean[0])
     print("raw pred\n",pred)
     print("pred.data",pred.data)

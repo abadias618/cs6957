@@ -15,10 +15,13 @@ class Parser(torch.nn.Module):
     def forward(self, inputs):
         #out = self.linear1(inputs)
         #out = self.activation_function1(out)    
-        #out = self.linear2(out)
+        #out = self.linear2(out)    
         #out = self.activation_function2(out)
+        print('INPUT SIZE',inputs.size())
         out = self.activation_function1(inputs)
+        print('AFTER ACTIVATION',out.size())
         out = self.linear2(out)
+        print('AFTER LINEAR',out.size())
         out = self.activation_function2(out)
         return out
     
