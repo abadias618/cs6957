@@ -129,7 +129,7 @@ def main():
                 #print(np.sort(pred.data.numpy()))
 
                 sorted_probs = np.sort(pred.data.numpy())[::-1]
-                for i in range(len(1,sorted_probs)): # 1 start bc we already checked argmax before
+                for i in range(1,len(sorted_probs)): # 1 start bc we already checked argmax before
                     action = "SHIFT"
                     print("try with:",tag_set_idx2name[round(i)])
                     if state.is_action_valid(s, tag_set_idx2name[round(i)]):
