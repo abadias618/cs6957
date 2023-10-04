@@ -24,7 +24,7 @@ def main():
 
     data = [] #tokens-dependencies-ParseState
     #put data into objs
-    for row in complete_data[:]:
+    for row in complete_data:
         tokens = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         data.append([tokens, row[2]])
@@ -101,29 +101,15 @@ def main():
             #print("\np_emb cat",p_emb_concat.size())
 
             # put vecs together
-            #print("\nmash",torch.add(w_emb_mean, p_emb_mean).size())
-            #print("label",torch_emb_labels(torch.Tensor([tag_set_name2idx[action]]).to(torch.int64)),tag_set_name2idx[action])
-            #labels.append(torch_emb_labels(torch.Tensor([tag_set_name2idx[action]]).to(torch.int64)))
             labels.append(tag_set_name2idx[action])
             train_mean.append(torch.add(w_emb_mean, p_emb_mean))
             train_concat.append(torch.add(w_emb_concat, p_emb_concat))
-    #print("labels\n",*[t.size() for t in labels])
-    #print()
-    #print(f"labels {len(labels)}, train_mean {len(train_mean)}, train_concat {len(train_concat)}\n\n")
-    #print(f"stacked train {torch.stack(train_mean).size()}, stacked labels {torch.stack(labels).size()}")
-    #print(f"stacked train {torch.stack(train_mean).size()}, stacked labels {torch.stack(labels,-1).size()}")
-    #print(f"stacked train {torch.stack(train_mean).size()}, stacked labels {torch.stack(labels, 0).size()}")
-    #print(f"stacked train {torch.stack(train_mean).size()}, stacked labels {torch.stack(labels, 1).size()}")
-    #print(f"stacked train {torch.stack(train_mean).size()}, stacked labels {torch.cat(labels, -1).size()}")
-    #print(f"stacked train {torch.stack(train_mean).size()}, stacked labels {torch.cat(labels, 0).size()}")
-    #print(f"stacked train {torch.stack(train_mean).size()}, stacked labels {torch.cat(labels, 1).size()}")
-    #print("dim", torch.cat(labels, 0)[0].size() )
-    #print("dim", torch.cat(labels, 0)[0][0].size() )
+
     dataset_mean = TensorDataset(torch.stack(train_mean), torch.tensor(labels))
     dataloader_mean = DataLoader(dataset_mean, batch_size = 64, shuffle=False)
 
     dataset_concat = TensorDataset(torch.stack(train_concat), torch.tensor(labels))
-    dataloader_concat = DataLoader(dataset_concat, batch_size = 128, shuffle=False)
+    dataloader_concat = DataLoader(dataset_concat, batch_size = 256, shuffle=False)
     print("FINALIZED DATA CREATION\n\n")
     model_mean = Parser(torch_emb_labels, DIM, NUMBER_OF_ACTIONS)
     print("MODEL CREATED\n",model_mean)
@@ -131,7 +117,7 @@ def main():
 
     loss_function = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model_mean.parameters(), lr=0.001) 
-    for epoch in range(20):
+    for epoch in range(1):
         with tqdm(dataloader_mean) as tepoch:
             for vector, target in tepoch:
                 #print("\n vector and target", vector.size(), target.size())
