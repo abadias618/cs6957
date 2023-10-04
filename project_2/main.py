@@ -124,7 +124,7 @@ def main():
                 raise Exception()
             #check for action validity
             if not state.is_action_valid(s, action):
-                print("entered not valid chunk")
+                print("entered not valid chunk because of",action)
                 #print(pred.data.numpy())
                 #print(np.sort(pred.data.numpy()))
 
@@ -132,7 +132,7 @@ def main():
                 for i in range(1,len(sorted_probs)): # 1 start bc we already checked argmax before
                     action = "SHIFT"
                     print("try with:",tag_set_idx2name[i])
-                    if state.is_action_valid(s, tag_set_idx2name[round(i)]):
+                    if state.is_action_valid(s, tag_set_idx2name[i]):
                         action =  tag_set_idx2name[i]
                         print("success with:",action)
                         break
