@@ -75,7 +75,7 @@ def main():
             # concat representation
             w_emb_concat = w_emb[0]
             for i in range(1,len(w_emb)-1):
-                torch.cat((w_emb_concat, w_emb[i]),0)
+                w_emb_concat = torch.cat((w_emb_concat, w_emb[i]),0)
             
             print("\nw_emb cat",w_emb_concat.size())
 
@@ -94,7 +94,7 @@ def main():
             print("\nFlat",p_emb.size())
             p_emb_concat = p_emb[0]
             for i in range(1,len(p_emb)-1):
-                torch.cat((p_emb_concat, p_emb[i]),0)
+                p_emb_concat = torch.cat((p_emb_concat, p_emb[i]),0)
             print("\np_emb cat",p_emb_concat.size())
 
             # put vecs together
