@@ -67,9 +67,9 @@ def main():
     #model_concat = train_model(dataloader_concat, model_concat, loss_function, optimizer_concat, epochs=1)
     
     pred = model_mean(train_mean[0])
-    print("raw pred\n",pred)
-    print("pred.data",pred.data)
-    print("argmax",np.argmax(pred.data.numpy()))
+    #print("raw pred\n",pred)
+    #print("pred.data",pred.data)
+    #print("argmax",np.argmax(pred.data.numpy()))
     print("result?",tag_set_idx2name[round(np.argmax(pred.data.numpy()))])
 
     hidden_data = dataloader.load_hidden("./data/hidden.txt")
@@ -129,10 +129,10 @@ def main():
                 print(np.sort(pred.data.numpy()))
 
                 sorted_probs = np.sort(pred.data.numpy())[::-1]
-                for a in sorted_probs:
+                for i in range(len(1,sorted_probs)): # 1 start bc we already checked argmax before
                     action = "SHIFT"
-                    print("invalid action:",tag_set_idx2name[round(a)])
-                    if state.is_action_valid(s, tag_set_idx2name[round(a)]):
+                    print("invalid action:",tag_set_idx2name[round(i)])
+                    if state.is_action_valid(s, tag_set_idx2name[round(i)]):
                         action =  tag_set_idx2name[round(a)]
                         break
             a = action.split("_")
