@@ -120,7 +120,7 @@ def main():
 
     loss_function = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model_mean.parameters(), lr=0.001) 
-    for epoch in range():
+    for epoch in range(1):
         with tqdm(dataloader_mean) as tepoch:
             for vector, target in tepoch:
                 tepoch.set_description(f"Epoch {epoch}")
