@@ -124,9 +124,14 @@ def main():
                 raise Exception()
             #check for action validity
             if not state.is_action_valid(s, action):
-                sorted_probs = pred.data.numpy().sort()
+                print("entered not valid chunk")
+                print(pred.data.numpy())
+                print(np.sort(pred.data.numpy()))
+
+                sorted_probs = np.sort(pred.data.numpy())[::-1]
                 for a in sorted_probs:
                     action = "SHIFT"
+                    print("invalid action:",tag_set_idx2name[round(a)])
                     if state.is_action_valid(s, tag_set_idx2name[round(a)]):
                         action =  tag_set_idx2name[round(a)]
                         break
