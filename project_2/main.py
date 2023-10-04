@@ -17,8 +17,6 @@ def main():
     #load data
     complete_data = dataloader.load_data("./data/train.txt")
     #print(complete_data[:2],"\n")
-    hidden_data = dataloader.load_hidden("./data/hidden.txt")
-    #print(hidden_data[:2],"\n")
     pos_set, pos_set_idx2name, pos_set_name2idx = dataloader.load_pos_set("./data/pos_set.txt")
     #print(pos_set,"\n")
     tagset, tag_set_idx2name, tag_set_name2idx = dataloader.load_tagset("./data/tagset.txt")
@@ -26,7 +24,7 @@ def main():
 
     data = [] #tokens-dependencies-ParseState
     #put data into objs
-    for row in complete_data[:2]:
+    for row in complete_data[:]:
         tokens = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         data.append([tokens, row[2]])
@@ -140,11 +138,25 @@ def main():
 
                 model_mean.zero_grad()
                 log_probs = model_mean(vector)
-                #print(f"log_probs {log_probs.size()}")
                 loss = loss_function(log_probs, target)
                 loss.backward(retain_graph=True)
                 optimizer.step()
                 tepoch.set_postfix(loss=loss.item())
             print('Epoch# '+str(epoch)+' - Loss: ' + str(loss.item()))   
     print("FINALIZED training\n\n",model_mean)
+    pred = model_mean(train_mean[0])
+    print("raw pred\n",pred)
+    print("pred.data",pred.data)
+
+    #hidden_data = dataloader.load_hidden("./data/hidden.txt")
+    ##print(hidden_data[:2],"\n")
+    #obj_hidden_data = [] #tokens-dependencies-ParseState
+    ##put data into objs
+    #for row in hidden_data[:2]:
+    #    tokens = \
+    #    [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
+    #    obj_hidden_data.append(tokens)
+#
+    #for row in obj_hidden_data:
+
 main()
