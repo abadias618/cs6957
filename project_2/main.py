@@ -83,9 +83,7 @@ def main():
 
     # loop
     for row in obj_hidden_data:
-        print("row[1]",row[1])
-        print("row[0]",row[0])
-        s = state.ParseState([],row[0],[])
+        s = state.ParseState([],row,[])
         while not state.is_final_state(s, C_WINDOW):
             w_stack = [w.word for w in s.stack]
             w_stack = state.pad(w_stack, C_WINDOW, "token")

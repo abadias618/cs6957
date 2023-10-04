@@ -75,9 +75,6 @@ def right_arc(state: ParseState, label: str) -> None:
 
 def is_final_state(state: ParseState, cwindow: int) -> bool:
     # TODO: Implemement this
-    print(f"stack {state.stack}, {len(state.stack)}")
-    print(f"buffer {state.parse_buffer}, {len(state.parse_buffer)}")
-    print(f"deps {state.dependencies}, {len(state.dependencies)}")
     if len(state.parse_buffer) == 0 and len(state.stack) == 0:
         return True
     else:
