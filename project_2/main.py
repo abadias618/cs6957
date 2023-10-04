@@ -83,6 +83,8 @@ def main():
 
     # loop
     for row in obj_hidden_data:
+        print("row[1]",row[1])
+        print("row[0]",row[0])
         s = state.ParseState([],row[0],[])
         while not state.is_final_state(s, C_WINDOW):
             w_stack = [w.word for w in s.stack]
@@ -132,8 +134,5 @@ def main():
                     state.right_arc(s, action)
             else:
                 state.shift(s)
-    #predict first action
-    
-    x,y = get_vectors(obj_hidden_data)
 
 main()
