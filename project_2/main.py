@@ -74,7 +74,7 @@ def main():
             print("\nw_emb mean",w_emb_mean.size())
             # concat representation
             w_emb_concat = w_emb[0]
-            for i in range(1,len(w_emb)-1):
+            for i in range(1,len(w_emb)):
                 w_emb_concat = torch.cat((w_emb_concat, w_emb[i]),0)
             
             print("\nw_emb cat",w_emb_concat.size())
@@ -93,7 +93,7 @@ def main():
             p_emb = torch.flatten(p_emb, start_dim=1)
             print("\nFlat",p_emb.size())
             p_emb_concat = p_emb[0]
-            for i in range(1,len(p_emb)-1):
+            for i in range(1,len(p_emb)):
                 p_emb_concat = torch.cat((p_emb_concat, p_emb[i]),0)
             print("\np_emb cat",p_emb_concat.size())
 
