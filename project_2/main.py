@@ -73,7 +73,10 @@ def main():
             w_emb_mean = torch.mean(w_emb, 0)
             print("\nw_emb mean",w_emb_mean.size())
             # concat representation
-            w_emb_concat = torch.cat((w_emb), 0)
+            w_emb_concat = w_emb[0]
+            for i in range(1,w_emb-1):
+                torch.cat((w_emb_concat, w_emb[i]),0)
+            
             print("\nw_emb cat",w_emb_concat.size())
 
             
@@ -87,7 +90,11 @@ def main():
             p_emb_mean = torch.mean(p_emb, 0)
             print("\np_emb mean",p_emb_mean.size())
             # concat representation
-            p_emb_concat = torch.cat((p_emb), 0)
+            p_emb = torch.flatten(p_emb, start_dim=1)
+            print("\nFlat",p_emb.size())
+            p_emb_concat = p_emb[0]
+            for i in range(1,p_emb-1):
+                torch.cat((p_emb_concat, p_emb[i]),0)
             print("\np_emb cat",p_emb_concat.size())
 
             # put vecs together
