@@ -1,5 +1,6 @@
 from scripts import dataloader
 from scripts import state
+from helper import *
 from Parser import *
 import numpy as np
 import random
@@ -24,7 +25,7 @@ def main():
 
     data = [] #tokens-dependencies-ParseState
     #put data into objs
-    for row in complete_data:
+    for row in complete_data[:100]:
         tokens = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         data.append([tokens, row[2]])
@@ -37,29 +38,53 @@ def main():
     glove = torchtext.vocab.GloVe(name="6B", dim=DIM)
     # Torch embeddings
     torch_emb = nn.Embedding(NUMBER_OF_POSTAGS, DIM)
-    torch_emb_labels = nn.Embedding(NUMBER_OF_ACTIONS, DIM)
-    train_mean = []
-    train_concat = []
-    labels = []
-    for row in data:
-        s = state.ParseState([],row[0],[])
-        #print("row[1] sanity check\n\n", row[1])
-        for action in row[1]:
-            #print("action\n",action)
-            if action not in tagset:
-                raise Exception()
-            
-            a = action.split("_")
-            
-            if  len(a) > 1:
-                if a[1] == "L":
-                    state.left_arc(s, action)
-                elif a[1] == "R":
-                    state.right_arc(s, action)
-            else:
-                state.shift(s)
+    
+    train_mean, train_concat, labels = prepare_vectors_for_training(data, tagset=tagset,
+                                                       C_WINDOW=C_WINDOW, glove=glove,
+                                                       torch_emb=torch_emb,
+                                                       pos_set_name2idx=pos_set_idx2name,
+                                                       tag_set_name2idx=tag_set_idx2name)
+    #READY DATA
+    dataset_mean = TensorDataset(torch.stack(train_mean), torch.tensor(labels))
+    dataloader_mean = DataLoader(dataset_mean, batch_size = 64, shuffle=False)
 
-            #pad
+    dataset_concat = TensorDataset(torch.stack(train_concat), torch.tensor(labels))
+    dataloader_concat = DataLoader(dataset_concat, batch_size = 256, shuffle=False)
+    print("FINALIZED DATA CREATION\n\n")
+
+    
+    # Create Models
+    model_mean = Parser(DIM, NUMBER_OF_ACTIONS)
+    print("MODEL_MEAN CREATED\n",model_mean)
+    model_concat = Parser(DIM, NUMBER_OF_ACTIONS)
+    print("MODEL_CONCAT CREATED\n",model_concat)
+    loss_function = nn.CrossEntropyLoss()
+    optimizer_mean = torch.optim.Adam(model_mean.parameters(), lr=0.001)
+    optimizer_concat = torch.optim.Adam(model_concat.parameters(), lr=0.001)
+
+    # train
+    model_mean = train_model(dataloader_mean, model_mean, loss_function, optimizer_mean, epochs=1)
+    #model_concat = train_model(dataloader_concat, model_concat, loss_function, optimizer_concat, epochs=1)
+    
+    pred = model_mean(train_mean[0])
+    print("raw pred\n",pred)
+    print("pred.data",pred.data)
+    print("argmax",np.argmax(pred.data.numpy()))
+    print("result?",tag_set_idx2name[round(np.argmax(pred.data.numpy()))])
+
+    hidden_data = dataloader.load_hidden("./data/hidden.txt")
+    ##print(hidden_data[:2],"\n")
+    obj_hidden_data = [] #tokens-dependencies-ParseState
+    #put data into objs
+    for row in hidden_data[:100]:
+        tokens = \
+        [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
+        obj_hidden_data.append(tokens)
+
+    # loop
+    for row in obj_hidden_data:
+        s = state.ParseState([],row[0],[])
+        while not state.is_final_state(s, C_WINDOW):
             w_stack = [w.word for w in s.stack]
             w_stack = state.pad(w_stack, C_WINDOW, "token")
             p_stack = [p.pos for p in s.stack]
@@ -71,81 +96,44 @@ def main():
             p_buffer = state.pad(p_buffer, C_WINDOW, "postag")
 
             w = w_stack + w_buffer
-            #print("\nw",w)
             w_emb = glove.get_vecs_by_tokens(w, lower_case_backup=True)
-            #print("\nw_emb",w_emb.size())
             # mean representation
             w_emb_mean = torch.mean(w_emb, 0)
-            #print("\nw_emb mean",w_emb_mean.size())
             # concat representation
             w_emb_concat = w_emb[0]
             for i in range(1,len(w_emb)):
                 w_emb_concat = torch.cat((w_emb_concat, w_emb[i]),0)
-            
-            #print("\nw_emb cat",w_emb_concat.size())
 
             
             p = p_stack + p_buffer
-            #print("\np",p)
             p = [pos_set_name2idx[tag] for tag in p]
-            #print("\np num",p)
             p_emb = torch_emb(torch.Tensor(p).to(torch.int64))
-            #print("\np_emb",p_emb.size())
             # mean representation
             p_emb_mean = torch.mean(p_emb, 0)
-            #print("\np_emb mean",p_emb_mean.size())
             # concat representation
             p_emb_concat = p_emb[0]
             for i in range(1,len(p_emb)):
                 p_emb_concat = torch.cat((p_emb_concat, p_emb[i]),0)
-            #print("\np_emb cat",p_emb_concat.size())
 
-            # put vecs together
-            labels.append(tag_set_name2idx[action])
-            train_mean.append(torch.add(w_emb_mean, p_emb_mean))
-            train_concat.append(torch.add(w_emb_concat, p_emb_concat))
+            pred = model_mean(torch.add(w_emb_mean, p_emb_mean))
+            pred_text = tag_set_idx2name[round(np.argmax(pred.data.numpy()))]
 
-    dataset_mean = TensorDataset(torch.stack(train_mean), torch.tensor(labels))
-    dataloader_mean = DataLoader(dataset_mean, batch_size = 64, shuffle=False)
+            action = model_mean()
 
-    dataset_concat = TensorDataset(torch.stack(train_concat), torch.tensor(labels))
-    dataloader_concat = DataLoader(dataset_concat, batch_size = 256, shuffle=False)
-    print("FINALIZED DATA CREATION\n\n")
-    model_mean = Parser(torch_emb_labels, DIM, NUMBER_OF_ACTIONS)
-    print("MODEL CREATED\n",model_mean)
-    model_concat = Parser(torch_emb_labels, DIM, NUMBER_OF_ACTIONS)
-
-    loss_function = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model_mean.parameters(), lr=0.001) 
-    for epoch in range(1):
-        with tqdm(dataloader_mean) as tepoch:
-            for vector, target in tepoch:
-                #print("\n vector and target", vector.size(), target.size())
-                tepoch.set_description(f"Epoch {epoch}")
-
-                model_mean.zero_grad()
-                log_probs = model_mean(vector)
-                loss = loss_function(log_probs, target)
-                loss.backward(retain_graph=True)
-                optimizer.step()
-                tepoch.set_postfix(loss=loss.item())
-            print('Epoch# '+str(epoch)+' - Loss: ' + str(loss.item()))   
-    print("FINALIZED training\n\n")
-    pred = model_mean(train_mean[0])
-    print("raw pred\n",pred)
-    print("pred.data",pred.data)
-    print("argmax",np.argmax(pred.data.numpy()))
-    print("result?",tag_set_idx2name[round(np.argmax(pred.data.numpy()))])
-
-    #hidden_data = dataloader.load_hidden("./data/hidden.txt")
-    ##print(hidden_data[:2],"\n")
-    #obj_hidden_data = [] #tokens-dependencies-ParseState
-    ##put data into objs
-    #for row in hidden_data[:2]:
-    #    tokens = \
-    #    [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
-    #    obj_hidden_data.append(tokens)
-#
-    #for row in obj_hidden_data:
+            if action not in tagset:
+                raise Exception()
+            
+            a = action.split("_")
+            
+            if  len(a) > 1:
+                if a[1] == "L":
+                    state.left_arc(s, action)
+                elif a[1] == "R":   
+                    state.right_arc(s, action)
+            else:
+                state.shift(s)
+    #predict first action
+    
+    x,y = get_vectors(obj_hidden_data)
 
 main()
