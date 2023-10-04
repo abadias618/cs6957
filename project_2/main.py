@@ -24,7 +24,7 @@ def main():
 
     data = [] #tokens-dependencies-ParseState
     #put data into objs
-    for row in complete_data[:20]:
+    for row in complete_data[:50]:
         tokens = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         data.append([tokens, row[2]])
