@@ -108,9 +108,11 @@ def main():
             labels.append(torch_emb_labels(torch.Tensor([tag_set_name2idx[action]]).to(torch.int64)))
             train_mean.append(torch.add(w_emb_mean, p_emb_mean))
             train_concat.append(torch.add(w_emb_concat, p_emb_concat))
+    print("labels\n",*[t for t in labels])
+    print()
     print(f"labels {len(labels)}, train_mean {len(train_mean)}, train_concat {len(train_concat)}\n\n")
     print(f"stacked train {torch.stack(train_mean).size()}, stacked labels {torch.stack(labels).size()}")
-    dataset_mean = TensorDataset(torch.stack(train_mean), torch.stack(labels))
+    dataset_mean = TensorDataset(torch.stack(train_mean), torch.stack((labels),-1))
     dataloader_mean = DataLoader(dataset_mean, batch_size = 64, shuffle=False)
 
     dataset_concat = TensorDataset(torch.stack(train_concat), torch.stack(labels))
