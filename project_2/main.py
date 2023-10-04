@@ -123,7 +123,7 @@ def main():
     for epoch in range(1):
         with tqdm(dataloader_mean) as tepoch:
             for vector, target in tepoch:
-                #print("\n vector and target", vector.size(), target.size())
+                print("\n vector and target", vector.size(), target.size())
                 tepoch.set_description(f"Epoch {epoch}")
 
                 model_mean.zero_grad()
