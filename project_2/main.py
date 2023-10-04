@@ -24,7 +24,7 @@ def main():
 
     data = [] #tokens-dependencies-ParseState
     #put data into objs
-    for row in complete_data[:50]:
+    for row in complete_data[:]:
         tokens = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         data.append([tokens, row[2]])
@@ -148,6 +148,8 @@ def main():
     pred = model_mean(train_mean[0])
     print("raw pred\n",pred)
     print("pred.data",pred.data)
+    print("argmax",np.argmax(pred.data.numpy()))
+    print("result?",tag_set_idx2name[round(np.argmax(pred.data.numpy()))])
 
     #hidden_data = dataloader.load_hidden("./data/hidden.txt")
     ##print(hidden_data[:2],"\n")
