@@ -130,12 +130,16 @@ def main():
 
                 sorted_probs = np.sort(pred.data.numpy())[::-1]
                 for i in range(1,len(sorted_probs)): # 1 start bc we already checked argmax before
-                    action = "SHIFT"
                     print("try with:",tag_set_idx2name[i])
                     if state.is_action_valid(s, tag_set_idx2name[i]):
                         action =  tag_set_idx2name[i]
                         print("success with:",action)
                         break
+            else:
+                print("valid action", action)
+
+            if not state.is_action_valid(s, action):
+                print("\n\n couldn't find a viable action")
             a = action.split("_")
             
             if  len(a) > 1:
