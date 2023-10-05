@@ -61,13 +61,12 @@ def prepare_vectors_for_training(raw_data, tagset, c_window, glove, torch_emb, p
 
 def array_len(a):
     counter_y = 0
-    counter_x = None
     for y in range(len(a)):
         counter_y += 1
         counter_x = 0
         for x in range(len(a[0])):
             counter_x += 1
-    return (y, x)
+    return (counter_y, counter_x)
     
 
 def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_name2idx,
