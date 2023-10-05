@@ -84,13 +84,13 @@ def main():
         model_concat = train_concat_model(dataloader_concat, model_concat, loss_function, optimizer_concat, epochs=1)
         
         # UAS - LAS
-        
+        print("sanity",len(obj_test_data))
         m_predictions_test = parse_n_predict(obj_test_data, tagset=tagset,
                                     c_window=C_WINDOW, glove=glove,
                                     torch_emb=torch_emb,
                                     pos_set_name2idx=pos_set_name2idx, model=model_mean,
                                     tag_set_idx2name=tag_set_idx2name, type="mean")
-        
+        print("sanity",len(obj_test_data))
         c_predictions_test = parse_n_predict(obj_test_data, tagset=tagset,
                                     c_window=C_WINDOW, glove=glove,
                                     torch_emb=torch_emb,
