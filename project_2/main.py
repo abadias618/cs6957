@@ -18,11 +18,8 @@ np.random.seed(1419615)
 def main():
     #load data
     complete_data = dataloader.load_data("./data/dev.txt")
-    #print(complete_data[:2],"\n")
     pos_set, pos_set_idx2name, pos_set_name2idx = dataloader.load_pos_set("./data/pos_set.txt")
-    #print(pos_set,"\n")
     tagset, tag_set_idx2name, tag_set_name2idx = dataloader.load_tagset("./data/tagset.txt")
-    #print(tagset,"\n")
 
     data = [] #tokens-dependencies-ParseState
     #put data into objs
@@ -30,7 +27,7 @@ def main():
         tokens = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         data.append([tokens, row[2]])
-    #print("data sanity check\n\n",data)
+        
     C_WINDOW = 2
     NUMBER_OF_POSTAGS = len(pos_set)
     NUMBER_OF_ACTIONS = len(tagset)
@@ -110,7 +107,7 @@ def main():
     q4_data = dataloader.load_hidden("./data/q4.txt")
     obj_q4_data = [] #tokens-dependencies-ParseState
     #put data into objs
-    for row in q4_data[:100]:
+    for row in q4_data:
         tokens = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         obj_q4_data.append(tokens)
