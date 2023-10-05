@@ -24,7 +24,7 @@ def main():
 
     data = [] #tokens-dependencies-ParseState
     #put data into objs
-    for row in complete_data:
+    for row in complete_data[:100]:
         tokens = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         data.append([tokens, row[2]])
@@ -48,7 +48,7 @@ def main():
     dataloader_mean = DataLoader(dataset_mean, batch_size = 64, shuffle=False)
 
     dataset_concat = TensorDataset(torch.stack(train_concat), torch.tensor(labels))
-    dataloader_concat = DataLoader(dataset_concat, batch_size = 64, shuffle=False)
+    dataloader_concat = DataLoader(dataset_concat, batch_size = 64*4, shuffle=False)
 
     test_data = dataloader.load_data("./data/test.txt")
     obj_test_data = [] #tokens-dependencies-ParseState

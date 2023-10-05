@@ -59,7 +59,8 @@ def prepare_vectors_for_training(raw_data, tagset, c_window, glove, torch_emb, p
             train_concat.append(torch.add(w_emb_concat, p_emb_concat))
     return train_mean, train_concat, labels
 
-def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_name2idx, model, tag_set_idx2name):
+def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_name2idx,
+                    model, tag_set_idx2name, type):
     predictions = []
     for row in hidden_data:
         s = state.ParseState([],row,[])
@@ -95,8 +96,12 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
             for i in range(1,len(p_emb)):
                 p_emb_concat = torch.cat((p_emb_concat, p_emb[i]),0)
 
-            pred = model(torch.add(w_emb_mean, p_emb_mean))
-            pred_text = tag_set_idx2name[round(np.argmax(pred.data.numpy()))]
+            if type == "mean":
+                pred = model(torch.add(w_emb_mean, p_emb_mean))
+                pred_text = tag_set_idx2name[round(np.argmax(pred.data.numpy()))]
+            elif type == "concat":
+                pred = model(torch.add(w_emb_concat, p_emb_concat))
+                pred_text = tag_set_idx2name[round(np.argmax(pred.data.numpy()))]
 
             action = pred_text
 
