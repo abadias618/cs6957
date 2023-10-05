@@ -5,7 +5,6 @@ from helper import *
 from Mean import *
 from Concat import *
 import numpy as np
-from copy import deepcopy
 import random
 import torch
 from torch.utils.data import DataLoader, TensorDataset
@@ -60,16 +59,22 @@ def main():
     best_model = None
     m_or_c = None
     for lr in [0.01, 0.001, 0.0001]:
+
         obj_test_data = [] #tokens-dependencies-ParseState
+        obj_test_data2 = [] # need to make another list since parser modifies objects and data gets unusable (.copy didn't work)
         gold_actions = []
         word_lists = []
         #put data into objs
         for row in test_data[:2]:
             tokens = \
             [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
+            tokens2 = \
+            [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
             obj_test_data.append(tokens)
+            obj_test_data2.append(tokens2)
             word_lists.append(row[0])
             gold_actions.append(row[2])
+            
         # Create Models
         model_mean = Mean(DIM, NUMBER_OF_ACTIONS)
         #print("MODEL_MEAN CREATED\n",model_mean)
@@ -84,12 +89,12 @@ def main():
         model_concat = train_concat_model(dataloader_concat, model_concat, loss_function, optimizer_concat, epochs=1)
         
         # UAS - LAS
-        m_predictions_test = parse_n_predict(hidden_data=deepcopy(obj_test_data), tagset=tagset,
+        m_predictions_test = parse_n_predict(hidden_data=obj_test_data, tagset=tagset,
                                     c_window=C_WINDOW, glove=glove,
                                     torch_emb=torch_emb,
                                     pos_set_name2idx=pos_set_name2idx, model=model_mean,
                                     tag_set_idx2name=tag_set_idx2name, type="mean")
-        c_predictions_test = parse_n_predict(hidden_data=deepcopy(obj_test_data), tagset=tagset,
+        c_predictions_test = parse_n_predict(hidden_data=obj_test_data2, tagset=tagset,
                                     c_window=C_WINDOW, glove=glove,
                                     torch_emb=torch_emb,
                                     pos_set_name2idx=pos_set_name2idx, model=model_concat,
