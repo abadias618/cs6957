@@ -77,13 +77,13 @@ def is_final_state(state: ParseState, cwindow: int, switch=False) -> bool:
     # TODO: Implemement this
     buffer_counter = 0
     for w in [x.word for x in state.parse_buffer]:
-        if w is not "[NULL]":
+        if w == "[NULL]":
             buffer_counter += 1
     
     stack_counter = 0
 
     for w in [x.word for x in state.stack]:
-        if w is not "[NULL]":
+        if w == "[NULL]":
             stack_counter += 1
     if switch:
         print("counters", buffer_counter, stack_counter)
