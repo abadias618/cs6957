@@ -117,6 +117,7 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
                         break
 
             if not state.is_action_valid(s, action):
+                print("trigger break")
                 break
             a = action.split("_")
             
@@ -130,5 +131,6 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
                 state.shift(s)
                 deps_predicted.append(action)
         predictions.append([deps_predicted,s.dependencies])
+        print("depts predicted", deps_predicted)
     return predictions 
 
