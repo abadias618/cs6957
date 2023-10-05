@@ -99,9 +99,10 @@ def main():
 
         m_uas_las = evaluate.compute_metrics(word_lists, gold_actions, 
                                         [p[0] for p in m_predictions_test], C_WINDOW)
-        
+        print("m preds",[p[0] for p in m_predictions_test][0])
         c_uas_las = evaluate.compute_metrics(word_lists, gold_actions, 
                                         [p[0] for p in c_predictions_test], C_WINDOW)
+        print("c preds",[p[0] for p in c_predictions_test][0])
 
         print("mean model UAS-LAS", m_uas_las)
         print("concat model UAS-LAS", c_uas_las)
