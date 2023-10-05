@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --account soc-gpu-np
 #SBATCH --partition soc-gpu-np
-#SBATCH --ntasks-per-node=32
-#SBATCH --nodes=1
-#SBATCH --gres=gpu:1 
-#SBATCH --time=2:00:00
+#SBATCH --ntasks-per-node=64
+#SBATCH --nodes=2
+#SBATCH --gres=gpu:2 
+#SBATCH --time=3:00:00
 #SBATCH --mem=10GB
 #SBATCH --mail-user=u1419615@umail.utah.edu
 #SBATCH --mail-type=FAIL,END
