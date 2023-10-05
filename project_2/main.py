@@ -62,7 +62,7 @@ def main():
         tokens2 = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         obj_test_data.append(tokens)
-        obj_test_data2(tokens2)
+        obj_test_data2.append(tokens2)
         word_lists.append(row[0])
         gold_actions.append(row[2])
     print("FINALIZED DATA CREATION\n\n")
