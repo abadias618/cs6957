@@ -33,6 +33,9 @@ def get_deps(words_lists, actions, cwindow):
                 left_arc(state, action[9:])
             else:
                 right_arc(state, action[9:])
+        print(f"words list {words_lists} actions {actions}")
+        print(f"state.stack {len(state.stack)}, state.buffer {len(state.parse_buffer)}")
+        print(f"state.stack {[x.word for x in state.stack]}, state.buffer {[x.word for x in state.parse_buffer]}")
         assert is_final_state(state,cwindow)    # Check to see that the parse is complete
         right_arc(state, "root")    # Add te root dependency for the remaining element on stack
         all_deps.append(state.dependencies.copy())  # Copy over the dependenices found
