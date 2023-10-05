@@ -91,7 +91,7 @@ def main():
                                     pos_set_name2idx=pos_set_name2idx, model=model_mean,
                                     tag_set_idx2name=tag_set_idx2name, type="mean")
         print("sanity",obj_test_data)
-        c_predictions_test = parse_n_predict(hidden_data=obj_test_data, tagset=tagset,
+        c_predictions_test = parse_n_predict(hidden_data=obj_test_data2, tagset=tagset,
                                     c_window=C_WINDOW, glove=glove,
                                     torch_emb=torch_emb,
                                     pos_set_name2idx=pos_set_name2idx, model=model_concat,
