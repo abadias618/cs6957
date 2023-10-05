@@ -1,6 +1,7 @@
 #!/bin/bash
 #SBATCH --account soc-gpu-np
 #SBATCH --partition soc-gpu-np
+#SBATCH --ntasks-per-node=32
 #SBATCH --nodes=1
 #SBATCH --gres=gpu:2080ti
 #SBATCH --time=2:00:00
