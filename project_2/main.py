@@ -25,7 +25,7 @@ def main():
 
     data = [] #tokens-dependencies-ParseState
     #put data into objs
-    for row in complete_data[:2]:
+    for row in complete_data[:]:
         tokens = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         data.append([tokens, row[2]])
@@ -35,7 +35,7 @@ def main():
     NUMBER_OF_ACTIONS = len(tagset)
     DIM = 50
     # Glove embeddings
-    glove = torchtext.vocab.GloVe(name="60B", dim=DIM)
+    glove = torchtext.vocab.GloVe(name="6B", dim=DIM)
     # Torch embeddings
     torch_emb = nn.Embedding(NUMBER_OF_POSTAGS, DIM)
     
@@ -56,7 +56,7 @@ def main():
     gold_actions = []
     word_lists = []
     #put data into objs
-    for row in test_data[:2]:
+    for row in test_data[:]:
         tokens = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         obj_test_data.append(tokens)
@@ -125,7 +125,7 @@ def main():
     hidden_data = dataloader.load_hidden("./data/hidden.txt")
     obj_hidden_data = [] #tokens-dependencies-ParseState
     #put data into objs
-    for row in hidden_data[:2]:
+    for row in hidden_data[:]:
         tokens = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         obj_hidden_data.append(tokens)
