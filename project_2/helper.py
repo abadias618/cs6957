@@ -65,6 +65,7 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
     print("this is my type",type)
     print("1. hidden data:\n",hidden_data)
     for row in hidden_data:
+        print("2. hidden data:\n",hidden_data)
         s = state.ParseState([],row,[])
         deps_predicted = []
         while not state.is_final_state(s, c_window):
@@ -136,7 +137,7 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
                 state.shift(s)
                 deps_predicted.append(action)
         predictions.append([deps_predicted,s.dependencies])
-        print("2. hidden data:\n",hidden_data)
+        
         print("depts predicted", deps_predicted,"\n")
     return predictions 
 
