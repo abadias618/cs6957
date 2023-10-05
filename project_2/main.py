@@ -35,7 +35,7 @@ def main():
     NUMBER_OF_ACTIONS = len(tagset)
     DIM = 50
     # Glove embeddings
-    glove = torchtext.vocab.GloVe(name="42B", dim=DIM)
+    glove = torchtext.vocab.GloVe(name="840B", dim=DIM)
     # Torch embeddings
     torch_emb = nn.Embedding(NUMBER_OF_POSTAGS, DIM)
     
