@@ -96,6 +96,7 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
             for i in range(1,len(p_emb)):
                 p_emb_concat = torch.cat((p_emb_concat, p_emb[i]),0)
 
+            pred_text = None
             if type == "mean":
                 pred = model(torch.add(w_emb_mean, p_emb_mean))
                 pred_text = tag_set_idx2name[round(np.argmax(pred.data.numpy()))]
