@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, './scripts/')
 from state import Token, ParseState, shift, left_arc, right_arc, is_final_state
 
 
