@@ -58,27 +58,15 @@ def prepare_vectors_for_training(raw_data, tagset, c_window, glove, torch_emb, p
             train_mean.append(torch.add(w_emb_mean, p_emb_mean))
             train_concat.append(torch.add(w_emb_concat, p_emb_concat))
     return train_mean, train_concat, labels
-
-def array_len(a):
-    counter_y = 0
-    for y in range(len(a)):
-        counter_y += 1
-        counter_x = 0
-        for x in range(len(a[0])):
-            counter_x += 1
-    return (counter_y, counter_x)
     
 
 def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_name2idx,
                     model, tag_set_idx2name, type):
     predictions = []
-    print("size inside parse_n_predict", array_len(hidden_data))
     for row in hidden_data:
-        print("size inside for", array_len(hidden_data))
         s = state.ParseState([],row,[])
         deps_predicted = []
         while not state.is_final_state(s, c_window):
-            print("size inside while", array_len(hidden_data))
             w_stack = [w.word for w in s.stack]
             w_stack = state.pad(w_stack, c_window, "token")
             p_stack = [p.pos for p in s.stack]

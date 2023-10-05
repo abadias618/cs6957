@@ -53,7 +53,6 @@ def main():
 
     test_data = dataloader.load_data("./data/test.txt")
     obj_test_data = [] #tokens-dependencies-ParseState
-    obj_test_data2 = [] # need to make another list since parser modifies objects and data gets unusable (.copy didn't work)
     gold_actions = []
     word_lists = []
     #put data into objs
@@ -98,8 +97,6 @@ def main():
                                     torch_emb=torch_emb,
                                     pos_set_name2idx=pos_set_name2idx, model=model_concat,
                                     tag_set_idx2name=tag_set_idx2name, type="concat")
-        del obj_test_data
-        del obj_test_data2
 
         m_uas_las = evaluate.compute_metrics(word_lists, gold_actions, 
                                         [p[0] for p in m_predictions_test], C_WINDOW)
