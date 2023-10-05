@@ -52,16 +52,7 @@ def main():
     dataloader_concat = DataLoader(dataset_concat, batch_size = 64*4, shuffle=False)
 
     test_data = dataloader.load_data("./data/test.txt")
-    obj_test_data = [] #tokens-dependencies-ParseState
-    gold_actions = []
-    word_lists = []
-    #put data into objs
-    for row in test_data[:2]:
-        tokens = \
-        [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
-        obj_test_data.append(tokens)
-        word_lists.append(row[0])
-        gold_actions.append(row[2])
+    
     print("FINALIZED DATA CREATION\n\n")
 
 
@@ -69,7 +60,16 @@ def main():
     best_model = None
     m_or_c = None
     for lr in [0.01, 0.001, 0.0001]:
-
+        obj_test_data = [] #tokens-dependencies-ParseState
+        gold_actions = []
+        word_lists = []
+        #put data into objs
+        for row in test_data[:2]:
+            tokens = \
+            [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
+            obj_test_data.append(tokens)
+            word_lists.append(row[0])
+            gold_actions.append(row[2])
         # Create Models
         model_mean = Mean(DIM, NUMBER_OF_ACTIONS)
         #print("MODEL_MEAN CREATED\n",model_mean)

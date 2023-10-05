@@ -118,7 +118,6 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
                         break
                    
             if not state.is_action_valid(s, action):
-                print("trigger break")
                 break
             a = action.split("_")
             
