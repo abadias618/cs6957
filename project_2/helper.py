@@ -63,8 +63,7 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
                     model, tag_set_idx2name, type):
     predictions = []
     print("this is my type",type)
-    if type == "concat":
-            print("hidden data:\n",hidden_data)
+    print("hidden data:\n",hidden_data)
     for row in hidden_data:
         s = state.ParseState([],row,[])
         deps_predicted = []
