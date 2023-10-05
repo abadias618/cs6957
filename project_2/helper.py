@@ -120,16 +120,21 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
 
             if action not in tagset:
                 raise Exception()
-            #check for action validity
+            # check for action validity among probabilities
             if not state.is_action_valid(s, action):
                 sorted_probs = np.sort(pred.data.numpy())[::-1]
                 for i in range(1,len(sorted_probs)): # 1 start bc we already checked argmax before
                     if state.is_action_valid(s, tag_set_idx2name[i]):
                         action =  tag_set_idx2name[i]
                         break
-                   
+            # check for action validity among all tagset
             if not state.is_action_valid(s, action):
-                print("no valid action break, last action =",action)
+                for act in tagset:
+                    if state.is_action_valid(s, act):
+                        action = act
+                        break
+            # If after all there's nothing still, break        
+            if not state.is_action_valid(s, action):
                 break
             a = action.split("_")
             print("before parse\n", hidden_data)
