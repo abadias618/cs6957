@@ -102,10 +102,10 @@ def main():
                                  tag_set_idx2name=tag_set_idx2name)
     print("predictions for hidden finished")
     # create .txt file
-    with open("results.txt","r") as file:
+    with open("results.txt","w") as file:
         for p in [x[0] for x in predictions_hidden]:
             file.write(" ".join(p) + "\n")
-            
+
     # get q4 dependency trees
     q4_data = dataloader.load_hidden("./data/q4.txt")
     obj_q4_data = [] #tokens-dependencies-ParseState
