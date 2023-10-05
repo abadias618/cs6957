@@ -122,8 +122,10 @@ def main():
                                  tag_set_idx2name=tag_set_idx2name)
     print("ANSWER for Q4")
     deps = [d[1] for d in predictions_q4]
-    for d, words in zip(deps, q4_data[0]):
-        print(f"For {words} the dependencies are:")
+    print("deps",deps, len(deps))
+    print("q4_data[0]",q4_data[0], len(q4_data[0]))
+    for d, words in zip(deps, q4_data):
+        print(f"For {words[0]} the dependencies are:")
         print([str(x.source.word+"-"+x.source.pos+" >> "+x.label+" >> "+x.target.word+"-"+x.target.pos) for x in d])
         print()
     print("MAIN FINISHED")
