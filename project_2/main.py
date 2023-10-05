@@ -44,7 +44,7 @@ def main():
                                                        tag_set_name2idx=tag_set_name2idx)
     #READY DATA
     dataset_mean = TensorDataset(torch.stack(train_mean), torch.tensor(labels))
-    dataloader_mean = DataLoader(dataset_mean, batch_size = 64, shuffle=False)
+    dataloader_mean = DataLoader(dataset_mean, batch_size = 256, shuffle=False)
 
     dataset_concat = TensorDataset(torch.stack(train_concat), torch.tensor(labels))
     dataloader_concat = DataLoader(dataset_concat, batch_size = 256, shuffle=False)
@@ -53,9 +53,9 @@ def main():
     
     # Create Models
     model_mean = Parser(DIM, NUMBER_OF_ACTIONS)
-    print("MODEL_MEAN CREATED\n",model_mean)
+    #print("MODEL_MEAN CREATED\n",model_mean)
     model_concat = Parser(DIM, NUMBER_OF_ACTIONS)
-    print("MODEL_CONCAT CREATED\n",model_concat)
+    #print("MODEL_CONCAT CREATED\n",model_concat)
     loss_function = nn.CrossEntropyLoss()
     optimizer_mean = torch.optim.Adam(model_mean.parameters(), lr=0.001)
     optimizer_concat = torch.optim.Adam(model_concat.parameters(), lr=0.001)
@@ -122,8 +122,6 @@ def main():
                                  tag_set_idx2name=tag_set_idx2name)
     print("ANSWER for Q4")
     deps = [d[1] for d in predictions_q4]
-    print("deps",deps, len(deps))
-    print("q4_data[0]",q4_data[0], len(q4_data[0]))
     for d, words in zip(deps, q4_data):
         print(f"For {words[0]} the dependencies are:")
         print([str(x.source.word+"-"+x.source.pos+" >> "+x.label+" >> "+x.target.word+"-"+x.target.pos) for x in d])
