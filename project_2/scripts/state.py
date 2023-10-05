@@ -71,9 +71,9 @@ def right_arc(state: ParseState, label: str) -> None:
     state.stack.append(lhs)
     pass
 
+    
 
-
-def is_final_state(state: ParseState, cwindow: int, switch=False) -> bool:
+def is_final_state(state: ParseState, cwindow: int) -> bool:
     # TODO: Implemement this
     buffer_counter = 0
     for w in [x.word for x in state.parse_buffer]:
@@ -85,10 +85,6 @@ def is_final_state(state: ParseState, cwindow: int, switch=False) -> bool:
     for w in [x.word for x in state.stack]:
         if w != "[NULL]":
             stack_counter += 1
-    if switch:
-        print("counters", buffer_counter, stack_counter)
-        print([x.word for x in state.parse_buffer])
-        print([x.word for x in state.stack])
 
     if stack_counter == 1 and buffer_counter == 0:
         return True

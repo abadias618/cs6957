@@ -90,7 +90,7 @@ def main():
                                        [p[0] for p in predictions_test], C_WINDOW)
 
     print("UAS-LAS", uas_las)
-    
+
     hidden_data = dataloader.load_hidden("./data/hidden.txt")
     obj_hidden_data = [] #tokens-dependencies-ParseState
     #put data into objs
@@ -103,6 +103,27 @@ def main():
                                  torch_emb=torch_emb,
                                  pos_set_name2idx=pos_set_name2idx, model=model_mean,
                                  tag_set_idx2name=tag_set_idx2name)
-    print("predictions for hidden",len(predictions_hidden))
+    print("predictions for hidden finished")
+    # create .txt file
+
+    # get q4 dependency trees
+    q4_data = dataloader.load_hidden("./data/q4.txt")
+    obj_q4_data = [] #tokens-dependencies-ParseState
+    #put data into objs
+    for row in q4_data[:100]:
+        tokens = \
+        [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
+        obj_q4_data.append(tokens)
+
+    predictions_q4 = parse_n_predict(obj_q4_data, tagset=tagset,
+                                 c_window=C_WINDOW, glove=glove,
+                                 torch_emb=torch_emb,
+                                 pos_set_name2idx=pos_set_name2idx, model=model_mean,
+                                 tag_set_idx2name=tag_set_idx2name)
+    print("ANSWER for Q4")
+    deps = [d[1] for d in predictions_q4]
+    for deps, words in zip(deps, q4_data[0]):
+        print(f"For {words} the dependencies are:\n{[str(x.source+x.label+x.target) for x in deps]}")
+
     print("MAIN FINISHED")
 main()
