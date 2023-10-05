@@ -6,7 +6,7 @@ class Concat(torch.nn.Module):
     def __init__(self, embedding_dim, actions_dim):
         super(Concat, self).__init__()
         
-        self.linear1 = nn.Linear(embedding_dim, 200)
+        self.linear1 = nn.Linear(embedding_dim * 4, 200)
         self.linear2 = nn.Linear(200, actions_dim)
 
         self.activation_function1 = nn.ReLU()
