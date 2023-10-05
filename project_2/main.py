@@ -74,7 +74,7 @@ def main():
             obj_test_data2.append(tokens2)
             word_lists.append(row[0])
             gold_actions.append(row[2])
-            
+
         # Create Models
         model_mean = Mean(DIM, NUMBER_OF_ACTIONS)
         #print("MODEL_MEAN CREATED\n",model_mean)
@@ -89,16 +89,21 @@ def main():
         model_concat = train_concat_model(dataloader_concat, model_concat, loss_function, optimizer_concat, epochs=1)
         
         # UAS - LAS
+        print("sanity m",len(obj_test_data), len(obj_test_data[0]))
         m_predictions_test = parse_n_predict(hidden_data=obj_test_data, tagset=tagset,
                                     c_window=C_WINDOW, glove=glove,
                                     torch_emb=torch_emb,
                                     pos_set_name2idx=pos_set_name2idx, model=model_mean,
                                     tag_set_idx2name=tag_set_idx2name, type="mean")
+        print("sanity c",len(obj_test_data2), len(obj_test_data2[0]))
         c_predictions_test = parse_n_predict(hidden_data=obj_test_data2, tagset=tagset,
                                     c_window=C_WINDOW, glove=glove,
                                     torch_emb=torch_emb,
                                     pos_set_name2idx=pos_set_name2idx, model=model_concat,
                                     tag_set_idx2name=tag_set_idx2name, type="concat")
+        del obj_test_data
+        del obj_test_data2
+
         m_uas_las = evaluate.compute_metrics(word_lists, gold_actions, 
                                         [p[0] for p in m_predictions_test], C_WINDOW)
         
