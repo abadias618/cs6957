@@ -69,7 +69,6 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
         s = state.ParseState([],row,[])
         deps_predicted = []
         while not state.is_final_state(s, c_window):
-            print("inside while hidden data:\n",hidden_data)
             print("inside while loop", type)
             w_stack = [w.word for w in s.stack]
             w_stack = state.pad(w_stack, c_window, "token")
@@ -100,7 +99,7 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
             p_emb_concat = p_emb[0]
             for i in range(1,len(p_emb)):
                 p_emb_concat = torch.cat((p_emb_concat, p_emb[i]),0)
-            print("before pred after vecs. hidden data:\n",hidden_data)
+            print("just before preds:\n",hidden_data)
             pred_text = None
             if type == "mean":
                 pred = model(torch.add(w_emb_mean, p_emb_mean))
@@ -111,6 +110,7 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
                 pred_text = tag_set_idx2name[round(np.argmax(pred.data.numpy()))]
                 print("pred_text")
 
+            print(f"right after preds:{pred_text}\n",hidden_data)
             action = pred_text
 
             if action not in tagset:
@@ -137,9 +137,8 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
             else:
                 state.shift(s)
                 deps_predicted.append(action)
-            print("end of loop hidden data:\n",hidden_data)
+            print("end of loop:\n",hidden_data)
         predictions.append([deps_predicted,s.dependencies])
-        print("after append hidden data:\n",hidden_data)
         print("depts predicted", deps_predicted,"\n")
     return predictions 
 
