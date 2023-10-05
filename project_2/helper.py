@@ -65,8 +65,11 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
     for row in hidden_data:
         s = state.ParseState([],row,[])
         deps_predicted = []
+        if type == "concat":
+            print(state.is_final_state(s, c_window))
+            print("h data:\n",hidden_data)
         while not state.is_final_state(s, c_window):
-            print("inside while loop")
+            print("inside while loop", type)
             w_stack = [w.word for w in s.stack]
             w_stack = state.pad(w_stack, c_window, "token")
             p_stack = [p.pos for p in s.stack]
