@@ -129,6 +129,7 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
                         break
                    
             if not state.is_action_valid(s, action):
+                print("no valid action break, last action =",action)
                 break
             a = action.split("_")
             print("before parse\n", hidden_data)
