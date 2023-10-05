@@ -66,6 +66,7 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
         s = state.ParseState([],row,[])
         deps_predicted = []
         while not state.is_final_state(s, c_window):
+            print("inside while loop")
             w_stack = [w.word for w in s.stack]
             w_stack = state.pad(w_stack, c_window, "token")
             p_stack = [p.pos for p in s.stack]
@@ -101,8 +102,8 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
                 pred = model(torch.add(w_emb_mean, p_emb_mean))
                 pred_text = tag_set_idx2name[round(np.argmax(pred.data.numpy()))]
             elif type == "concat":
+                print("inside concat")
                 pred = model(torch.add(w_emb_concat, p_emb_concat))
-                
                 pred_text = tag_set_idx2name[round(np.argmax(pred.data.numpy()))]
                 print("pred_text")
 
