@@ -120,7 +120,7 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
             if not state.is_action_valid(s, action):
                 break
             a = action.split("_")
-            
+            print("before parse\n", hidden_data)
             if  len(a) > 1:
                 if a[1] == "L":
                     state.left_arc(s, action)
@@ -130,6 +130,7 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
             else:
                 state.shift(s)
                 deps_predicted.append(action)
+            print("after parse\n", hidden_data)
         predictions.append([deps_predicted,s.dependencies])
     return predictions 
 
