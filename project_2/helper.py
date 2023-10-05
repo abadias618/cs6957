@@ -63,12 +63,13 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
                     model, tag_set_idx2name, type):
     predictions = []
     print("this is my type",type)
-    print("1. hidden data:\n",hidden_data)
+    
     for row in hidden_data:
-        print("2. hidden data:\n",hidden_data)
+        
         s = state.ParseState([],row,[])
         deps_predicted = []
         while not state.is_final_state(s, c_window):
+            print("inside while hidden data:\n",hidden_data)
             print("inside while loop", type)
             w_stack = [w.word for w in s.stack]
             w_stack = state.pad(w_stack, c_window, "token")
@@ -99,7 +100,7 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
             p_emb_concat = p_emb[0]
             for i in range(1,len(p_emb)):
                 p_emb_concat = torch.cat((p_emb_concat, p_emb[i]),0)
-
+            print("before pred after vecs. hidden data:\n",hidden_data)
             pred_text = None
             if type == "mean":
                 pred = model(torch.add(w_emb_mean, p_emb_mean))
@@ -136,8 +137,9 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
             else:
                 state.shift(s)
                 deps_predicted.append(action)
+            print("end of loop hidden data:\n",hidden_data)
         predictions.append([deps_predicted,s.dependencies])
-        
+        print("after append hidden data:\n",hidden_data)
         print("depts predicted", deps_predicted,"\n")
     return predictions 
 
