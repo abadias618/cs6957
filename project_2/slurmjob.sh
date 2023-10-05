@@ -3,7 +3,7 @@
 #SBATCH --partition soc-gpu-np
 #SBATCH --ntasks-per-node=32
 #SBATCH --nodes=1
-#SBATCH --gres=gpu:titanv:1 
+#SBATCH --gres=gpu:2080ti:2 
 #SBATCH --time=2:00:00
 #SBATCH --mem=10GB
 #SBATCH --mail-user=u1419615@umail.utah.edu
