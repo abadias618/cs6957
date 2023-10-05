@@ -44,27 +44,11 @@ def main():
                                                        tag_set_name2idx=tag_set_name2idx)
     #READY DATA
     dataset_mean = TensorDataset(torch.stack(train_mean), torch.tensor(labels))
-    dataloader_mean = DataLoader(dataset_mean, batch_size = 256, shuffle=False)
+    dataloader_mean = DataLoader(dataset_mean, batch_size = 64, shuffle=False)
 
     dataset_concat = TensorDataset(torch.stack(train_concat), torch.tensor(labels))
-    dataloader_concat = DataLoader(dataset_concat, batch_size = 256, shuffle=False)
-    print("FINALIZED DATA CREATION\n\n")
+    dataloader_concat = DataLoader(dataset_concat, batch_size = 64, shuffle=False)
 
-    
-    # Create Models
-    model_mean = Parser(DIM, NUMBER_OF_ACTIONS)
-    #print("MODEL_MEAN CREATED\n",model_mean)
-    model_concat = Parser(DIM, NUMBER_OF_ACTIONS)
-    #print("MODEL_CONCAT CREATED\n",model_concat)
-    loss_function = nn.CrossEntropyLoss()
-    optimizer_mean = torch.optim.Adam(model_mean.parameters(), lr=0.001)
-    optimizer_concat = torch.optim.Adam(model_concat.parameters(), lr=0.001)
-
-    # train
-    model_mean = train_model(dataloader_mean, model_mean, loss_function, optimizer_mean, epochs=1)
-    #model_concat = train_model(dataloader_concat, model_concat, loss_function, optimizer_concat, epochs=1)
-    
-    # UAS - LAS
     test_data = dataloader.load_data("./data/test.txt")
     obj_test_data = [] #tokens-dependencies-ParseState
     gold_actions = []
@@ -76,17 +60,61 @@ def main():
         obj_test_data.append(tokens)
         word_lists.append(row[0])
         gold_actions.append(row[2])
-    
-    predictions_test = parse_n_predict(obj_test_data, tagset=tagset,
-                                 c_window=C_WINDOW, glove=glove,
-                                 torch_emb=torch_emb,
-                                 pos_set_name2idx=pos_set_name2idx, model=model_mean,
-                                 tag_set_idx2name=tag_set_idx2name)
 
-    uas_las = evaluate.compute_metrics(word_lists, gold_actions, 
-                                       [p[0] for p in predictions_test], C_WINDOW)
+    print("FINALIZED DATA CREATION\n\n")
 
-    print("UAS-LAS", uas_las)
+
+    overall_score = float('-inf')
+    best_model = None
+    for lr in [0.01, 0.001, 0.0001]:
+
+        # Create Models
+        model_mean = Parser(DIM, NUMBER_OF_ACTIONS)
+        #print("MODEL_MEAN CREATED\n",model_mean)
+        model_concat = Parser(DIM, NUMBER_OF_ACTIONS)
+        #print("MODEL_CONCAT CREATED\n",model_concat)
+        loss_function = nn.CrossEntropyLoss()
+        optimizer_mean = torch.optim.Adam(model_mean.parameters(), lr=lr)
+        optimizer_concat = torch.optim.Adam(model_concat.parameters(), lr=lr)
+
+        # train
+        model_mean = train_model(dataloader_mean, model_mean, loss_function, optimizer_mean, epochs=1)
+        model_concat = train_model(dataloader_concat, model_concat, loss_function, optimizer_concat, epochs=1)
+        
+        # UAS - LAS
+        
+        m_predictions_test = parse_n_predict(obj_test_data, tagset=tagset,
+                                    c_window=C_WINDOW, glove=glove,
+                                    torch_emb=torch_emb,
+                                    pos_set_name2idx=pos_set_name2idx, model=model_mean,
+                                    tag_set_idx2name=tag_set_idx2name)
+        
+        c_predictions_test = parse_n_predict(obj_test_data, tagset=tagset,
+                                    c_window=C_WINDOW, glove=glove,
+                                    torch_emb=torch_emb,
+                                    pos_set_name2idx=pos_set_name2idx, model=model_concat,
+                                    tag_set_idx2name=tag_set_idx2name)
+
+        m_uas_las = evaluate.compute_metrics(word_lists, gold_actions, 
+                                        [p[0] for p in m_predictions_test], C_WINDOW)
+        
+        c_uas_las = evaluate.compute_metrics(word_lists, gold_actions, 
+                                        [p[0] for p in c_predictions_test], C_WINDOW)
+
+        print("mean model UAS-LAS", m_uas_las)
+        print("concat model UAS-LAS", c_uas_las)
+
+        if m_uas_las[1] > c_uas_las[1]:
+            if m_uas_las[1] > overall_score:
+                overall_score = m_uas_las[1]
+                best_model = model_mean
+            elif c_uas_las[1] > overall_score:
+                overall_score = c_uas_las[1]
+                best_model = model_concat
+                
+
+    model = best_model
+
 
     hidden_data = dataloader.load_hidden("./data/hidden.txt")
     obj_hidden_data = [] #tokens-dependencies-ParseState
@@ -98,7 +126,7 @@ def main():
     predictions_hidden = parse_n_predict(obj_hidden_data, tagset=tagset,
                                  c_window=C_WINDOW, glove=glove,
                                  torch_emb=torch_emb,
-                                 pos_set_name2idx=pos_set_name2idx, model=model_mean,
+                                 pos_set_name2idx=pos_set_name2idx, model=model,
                                  tag_set_idx2name=tag_set_idx2name)
     print("predictions for hidden finished")
     # create .txt file
@@ -118,7 +146,7 @@ def main():
     predictions_q4 = parse_n_predict(obj_q4_data, tagset=tagset,
                                  c_window=C_WINDOW, glove=glove,
                                  torch_emb=torch_emb,
-                                 pos_set_name2idx=pos_set_name2idx, model=model_mean,
+                                 pos_set_name2idx=pos_set_name2idx, model=model,
                                  tag_set_idx2name=tag_set_idx2name)
     print("ANSWER for Q4")
     deps = [d[1] for d in predictions_q4]
