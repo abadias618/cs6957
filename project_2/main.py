@@ -67,6 +67,7 @@ def main():
 
     overall_score = float('-inf')
     best_model = None
+    m_or_c = None
     for lr in [0.01, 0.001, 0.0001]:
 
         # Create Models
@@ -88,13 +89,13 @@ def main():
                                     c_window=C_WINDOW, glove=glove,
                                     torch_emb=torch_emb,
                                     pos_set_name2idx=pos_set_name2idx, model=model_mean,
-                                    tag_set_idx2name=tag_set_idx2name)
+                                    tag_set_idx2name=tag_set_idx2name, type="mean")
         
         c_predictions_test = parse_n_predict(obj_test_data, tagset=tagset,
                                     c_window=C_WINDOW, glove=glove,
                                     torch_emb=torch_emb,
                                     pos_set_name2idx=pos_set_name2idx, model=model_concat,
-                                    tag_set_idx2name=tag_set_idx2name)
+                                    tag_set_idx2name=tag_set_idx2name, type="concat")
 
         m_uas_las = evaluate.compute_metrics(word_lists, gold_actions, 
                                         [p[0] for p in m_predictions_test], C_WINDOW)
@@ -109,9 +110,11 @@ def main():
             if m_uas_las[1] > overall_score:
                 overall_score = m_uas_las[1]
                 best_model = model_mean
+                m_or_c = "mean"
             elif c_uas_las[1] > overall_score:
                 overall_score = c_uas_las[1]
                 best_model = model_concat
+                m_or_c = "concat"
                 
 
     model = best_model
@@ -128,7 +131,7 @@ def main():
                                  c_window=C_WINDOW, glove=glove,
                                  torch_emb=torch_emb,
                                  pos_set_name2idx=pos_set_name2idx, model=model,
-                                 tag_set_idx2name=tag_set_idx2name)
+                                 tag_set_idx2name=tag_set_idx2name,type=m_or_c)
     print("predictions for hidden finished")
     # create .txt file
     with open("results.txt","w") as file:
@@ -148,7 +151,7 @@ def main():
                                  c_window=C_WINDOW, glove=glove,
                                  torch_emb=torch_emb,
                                  pos_set_name2idx=pos_set_name2idx, model=model,
-                                 tag_set_idx2name=tag_set_idx2name)
+                                 tag_set_idx2name=tag_set_idx2name, type=m_or_c)
     print("ANSWER for Q4")
     deps = [d[1] for d in predictions_q4]
     for d, words in zip(deps, q4_data):

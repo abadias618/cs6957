@@ -14,7 +14,6 @@ class Mean(torch.nn.Module):
 
     def forward(self, inputs):
         out = self.activation_function1(inputs)
-        print("mean inputs",inputs.size())
         out = self.linear1(out)
         out = self.linear2(out)    
         out = self.activation_function2(out)
