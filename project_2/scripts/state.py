@@ -75,10 +75,24 @@ def right_arc(state: ParseState, label: str) -> None:
 
 def is_final_state(state: ParseState, cwindow: int) -> bool:
     # TODO: Implemement this
+    buffer_condition = True
+    for w in [x.word for x in state.parse_buffer]:
+        if w is not "[NULL]":
+            buffer_condition = False
+    
+    stack_counter = 0
+
+    for w in [x.word for x in state.stack]:
+        if w is not "[NULL]":
+            stack_counter += 1
+    
+    if stack_counter == 1 and buffer_condition is True:
+        return True
+
     if len(state.parse_buffer) == 0 and len(state.stack) == 0:
         return True
-    else:
-        return False
+    
+    return False
 
 def pad(vec: list, cwindow: int, type: str) -> list:
     padded_vec = []
