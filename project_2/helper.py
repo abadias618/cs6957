@@ -62,14 +62,12 @@ def prepare_vectors_for_training(raw_data, tagset, c_window, glove, torch_emb, p
 def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_name2idx,
                     model, tag_set_idx2name, type):
     predictions = []
-    print("this is my type",type)
     
     for row in hidden_data:
         
         s = state.ParseState([],row,[])
         deps_predicted = []
         while not state.is_final_state(s, c_window):
-            print("inside while loop", type)
             w_stack = [w.word for w in s.stack]
             w_stack = state.pad(w_stack, c_window, "token")
             p_stack = [p.pos for p in s.stack]
@@ -104,12 +102,9 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
                 pred = model(torch.add(w_emb_mean, p_emb_mean))
                 pred_text = tag_set_idx2name[round(np.argmax(pred.data.numpy()))]
             elif type == "concat":
-                print("inside concat")
                 pred = model(torch.add(w_emb_concat, p_emb_concat))
                 pred_text = tag_set_idx2name[round(np.argmax(pred.data.numpy()))]
-                print("pred_text")
 
-            print(f"right after preds:{pred_text}\n",hidden_data)
             action = pred_text
 
             if action not in tagset:
@@ -121,14 +116,12 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
                     if state.is_action_valid(s, tag_set_idx2name[i]):
                         action =  tag_set_idx2name[i]
                         break
-            
-            print("just after valid check:\n",hidden_data)           
+                   
             if not state.is_action_valid(s, action):
                 print("trigger break")
                 break
             a = action.split("_")
             
-            print("just after last valid check:\n",hidden_data)
             if  len(a) > 1:
                 if a[1] == "L":
                     state.left_arc(s, action)
@@ -138,8 +131,6 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
             else:
                 state.shift(s)
                 deps_predicted.append(action)
-            print("end of loop:\n",hidden_data)
         predictions.append([deps_predicted,s.dependencies])
-        print("depts predicted", deps_predicted,"\n")
     return predictions 
 
