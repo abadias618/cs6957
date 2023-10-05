@@ -27,7 +27,7 @@ def main():
         tokens = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         data.append([tokens, row[2]])
-        
+
     C_WINDOW = 2
     NUMBER_OF_POSTAGS = len(pos_set)
     NUMBER_OF_ACTIONS = len(tagset)
@@ -102,7 +102,10 @@ def main():
                                  tag_set_idx2name=tag_set_idx2name)
     print("predictions for hidden finished")
     # create .txt file
-
+    with open("results.txt","r") as file:
+        for p in [x[0] for x in predictions_hidden]:
+            file.write(" ".join(p) + "\n")
+            
     # get q4 dependency trees
     q4_data = dataloader.load_hidden("./data/q4.txt")
     obj_q4_data = [] #tokens-dependencies-ParseState
