@@ -61,6 +61,7 @@ def prepare_vectors_for_training(raw_data, tagset, c_window, glove, torch_emb, p
 
 def array_len(a):
     counter_y = 0
+    counter_x = None
     for y in range(len(a)):
         counter_y += 1
         counter_x = 0
