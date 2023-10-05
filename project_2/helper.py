@@ -102,7 +102,9 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
                 pred_text = tag_set_idx2name[round(np.argmax(pred.data.numpy()))]
             elif type == "concat":
                 pred = model(torch.add(w_emb_concat, p_emb_concat))
+                
                 pred_text = tag_set_idx2name[round(np.argmax(pred.data.numpy()))]
+                print("pred_text")
 
             action = pred_text
 
@@ -131,6 +133,6 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
                 state.shift(s)
                 deps_predicted.append(action)
         predictions.append([deps_predicted,s.dependencies])
-        print("depts predicted", deps_predicted)
+        print("depts predicted", deps_predicted,"\n")
     return predictions 
 
