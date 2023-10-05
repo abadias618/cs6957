@@ -123,7 +123,8 @@ def main():
     print("ANSWER for Q4")
     deps = [d[1] for d in predictions_q4]
     for deps, words in zip(deps, q4_data[0]):
-        print(f"For {words} the dependencies are:\n{[str(x.source+x.label+x.target) for x in deps]}")
+        print(f"For {words} the dependencies are:")
+        print([str(x.source.word+"-"+x.source.pos+">>"+x.label+">>"+x.target.word+"-"+x.target.pos) for x in deps])
 
     print("MAIN FINISHED")
 main()
