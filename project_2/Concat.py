@@ -2,9 +2,9 @@ import torch
 from torch import nn
 from tqdm import tqdm
 
-class Parser(torch.nn.Module):
+class Concat(torch.nn.Module):
     def __init__(self, embedding_dim, actions_dim):
-        super(Parser, self).__init__()
+        super(Concat, self).__init__()
         
         self.linear1 = nn.Linear(embedding_dim, 200)
         self.linear2 = nn.Linear(200, actions_dim)
@@ -14,15 +14,13 @@ class Parser(torch.nn.Module):
 
     def forward(self, inputs):
         out = self.activation_function1(inputs)
+        print("concat inputs",inputs.size())
         out = self.linear1(out)
         out = self.linear2(out)    
         out = self.activation_function2(out)
         return out
     
-    def get_emdeddings(self, pos_embedder, glove_embedder, text, postags):
-        return
-    
-def train_model(dataloader, model, loss_f, optimizer, epochs):
+def train_concat_model(dataloader, model, loss_f, optimizer, epochs):
     # Train
     for epoch in range(epochs):
         with tqdm(dataloader) as tepoch:

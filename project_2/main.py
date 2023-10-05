@@ -2,7 +2,8 @@ from scripts import dataloader
 from scripts import state
 from scripts import evaluate
 from helper import *
-from Parser import *
+from Mean import *
+from Concat import *
 import numpy as np
 import random
 import torch
@@ -23,7 +24,7 @@ def main():
 
     data = [] #tokens-dependencies-ParseState
     #put data into objs
-    for row in complete_data[:100]:
+    for row in complete_data:
         tokens = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         data.append([tokens, row[2]])
@@ -47,14 +48,14 @@ def main():
     dataloader_mean = DataLoader(dataset_mean, batch_size = 64, shuffle=False)
 
     dataset_concat = TensorDataset(torch.stack(train_concat), torch.tensor(labels))
-    dataloader_concat = DataLoader(dataset_concat, batch_size = 64, shuffle=False)
+    dataloader_concat = DataLoader(dataset_concat, batch_size = 50, shuffle=False)
 
     test_data = dataloader.load_data("./data/test.txt")
     obj_test_data = [] #tokens-dependencies-ParseState
     gold_actions = []
     word_lists = []
     #put data into objs
-    for row in test_data[:100]:
+    for row in test_data:
         tokens = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         obj_test_data.append(tokens)
@@ -69,17 +70,17 @@ def main():
     for lr in [0.01, 0.001, 0.0001]:
 
         # Create Models
-        model_mean = Parser(DIM, NUMBER_OF_ACTIONS)
+        model_mean = Mean(DIM, NUMBER_OF_ACTIONS)
         #print("MODEL_MEAN CREATED\n",model_mean)
-        model_concat = Parser(DIM, NUMBER_OF_ACTIONS)
+        model_concat = Concat(DIM, NUMBER_OF_ACTIONS)
         #print("MODEL_CONCAT CREATED\n",model_concat)
         loss_function = nn.CrossEntropyLoss()
         optimizer_mean = torch.optim.Adam(model_mean.parameters(), lr=lr)
         optimizer_concat = torch.optim.Adam(model_concat.parameters(), lr=lr)
 
         # train
-        model_mean = train_model(dataloader_mean, model_mean, loss_function, optimizer_mean, epochs=1)
-        model_concat = train_model(dataloader_concat, model_concat, loss_function, optimizer_concat, epochs=1)
+        model_mean = train_mean_model(dataloader_mean, model_mean, loss_function, optimizer_mean, epochs=1)
+        model_concat = train_concat_model(dataloader_concat, model_concat, loss_function, optimizer_concat, epochs=1)
         
         # UAS - LAS
         
