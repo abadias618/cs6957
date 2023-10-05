@@ -61,7 +61,7 @@ def main():
         obj_test_data.append(tokens)
         word_lists.append(row[0])
         gold_actions.append(row[2])
-
+    obj_test_data2 = obj_test_data.copy()
     print("FINALIZED DATA CREATION\n\n")
 
 
