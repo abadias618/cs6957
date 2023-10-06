@@ -8,6 +8,9 @@ def prepare_vecs_for_extra_cred(raw_data, tagset, c_window, glove, torch_emb, po
     for row in raw_data:
         s = state_extra.ParseState([],row[0],[])
         for idx, action in enumerate(row[1]):
+            # check that there is at least 2 elements in the stack
+            # otherwise set L vector to defaults
+                
             if action not in tagset:
                 raise Exception()
             # check for action validity among all tagset
@@ -21,7 +24,7 @@ def prepare_vecs_for_extra_cred(raw_data, tagset, c_window, glove, torch_emb, po
                 print("emergency break bad training file, an action is not valid")
                 break
             a = action.split("_")
-
+            # get right most and left most from current 2 elements of stack
             if  len(a) > 1:
                 if a[1] == "L":
                     state_extra.left_arc(s, action)
@@ -29,8 +32,6 @@ def prepare_vecs_for_extra_cred(raw_data, tagset, c_window, glove, torch_emb, po
                     state_extra.right_arc(s, action)
             else:
                 state_extra.shift(s)
-
-            
 
             #pad
             w_stack = [w.word for w in s.stack]
@@ -42,11 +43,7 @@ def prepare_vecs_for_extra_cred(raw_data, tagset, c_window, glove, torch_emb, po
             w_buffer = state_extra.pad(w_buffer, c_window, "token")
             p_buffer = [p.pos for p in s.parse_buffer]
             p_buffer = state_extra.pad(p_buffer, c_window, "postag")
-            # get right most and left most from current 2 elements of stack
-            # check that there is at least 2 elements in the stack
-            # otherwise set L vector to defaults
-            if len(s.stack) < 2:
-                print()
+
             w = w_stack + w_buffer
             w_emb = glove.get_vecs_by_tokens(w, lower_case_backup=True)
             # mean representation
@@ -71,7 +68,7 @@ def prepare_vecs_for_extra_cred(raw_data, tagset, c_window, glove, torch_emb, po
             labels.append(tag_set_name2idx[action])
             train.append(torch.add(w_emb_mean, p_emb_mean))
 
-    return train, labels
+    return train, train, labels
 
 def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_name2idx,
                     model, tag_set_idx2name, type):

@@ -23,16 +23,19 @@ def main():
     pos_set, pos_set_idx2name, pos_set_name2idx = dataloader.load_pos_set("./data/pos_set.txt")
     tagset, tag_set_idx2name, tag_set_name2idx = dataloader.load_tagset("./data/tagset.txt")
 
-    data = [] #tokens-dependencies-ParseState
-    #put data into objs
-    for row in complete_data[:]:
-        tokens = \
-        [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
-        data.append([tokens, row[2]])
-
     C_WINDOW = 2
     NUMBER_OF_POSTAGS = len(pos_set)
     NUMBER_OF_ACTIONS = len(tagset)
+
+    data = [] #tokens-dependencies-ParseState
+    #put data into objs
+    for row in complete_data[:2]:
+        tokens = \
+        [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]+ \
+        ([state.Token(0,"[PAD]","NULL") for x in range(C_WINDOW)])
+        data.append([tokens, row[2]])
+
+    
     GLOVE_CONFIG=[("6B",50),("6B", 300),("42B",300),("840B", 300)]
 
     overall_score = float('-inf')
@@ -63,9 +66,10 @@ def main():
         gold_actions = []
         word_lists = []
         #put data into objs
-        for row in test_data[:]:
+        for row in test_data[:2]:
             tokens = \
-            [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
+            [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]+ \
+            ([state.Token(0,"[PAD]","NULL") for x in range(C_WINDOW)])
             obj_test_data.append(tokens)
             word_lists.append(row[0])
             gold_actions.append(row[2])
@@ -131,7 +135,7 @@ def main():
     hidden_data = dataloader.load_hidden("./data/hidden.txt")
     obj_hidden_data = [] #tokens-dependencies-ParseState
     #put data into objs
-    for row in hidden_data[:]:
+    for row in hidden_data[:2]:
         tokens = \
         [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         obj_hidden_data.append(tokens)

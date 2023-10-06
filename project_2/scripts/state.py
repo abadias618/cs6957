@@ -77,13 +77,13 @@ def is_final_state(state: ParseState, cwindow: int) -> bool:
     # TODO: Implemement this
     buffer_counter = 0
     for w in [x.word for x in state.parse_buffer]:
-        if w != "[NULL]":
+        if w != "[NULL]" and w != "[PAD]":
             buffer_counter += 1
     
     stack_counter = 0
 
     for w in [x.word for x in state.stack]:
-        if w != "[NULL]":
+        if w != "[NULL]" and w != "[PAD]":
             stack_counter += 1
 
     if stack_counter == 1 and buffer_counter == 0:
@@ -91,7 +91,7 @@ def is_final_state(state: ParseState, cwindow: int) -> bool:
 
     if len(state.parse_buffer) == 0 and len(state.stack) == 0:
         return True
-    
+
     return False
 
 def pad(vec: list, cwindow: int, type: str) -> list:
@@ -122,7 +122,12 @@ def is_action_valid(state: ParseState, action: str):
     if  len(a) > 1:
         if len(state.stack) < 2:
             return False
+        if len(state.stack) == 3 and state.stack[0].word == ["[PAD]"]\
+            and state.stack[1].word == ["[PAD]"] and state.stack[2].word != ["[PAD]"]:
+            return False
     else:
         if len(state.parse_buffer) < 1:
+            return False
+        if len(state.parse_buffer) == 2 and state.parse_buffer[0].word == "[PAD]" and state.parse_buffer[1].word == "[PAD]":
             return False
     return True

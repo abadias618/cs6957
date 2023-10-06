@@ -7,7 +7,7 @@ def prepare_vectors_for_training(raw_data, tagset, c_window, glove, torch_emb, p
     train_concat = []
     labels = []
     for row in raw_data:
-        s = state.ParseState([],row[0],[])
+        s = state.ParseState([state.Token(0,"[PAD]","NULL") for x in range(c_window)],row[0],[])
         for action in row[1]:
             if action not in tagset:
                 raise Exception()
@@ -32,15 +32,15 @@ def prepare_vectors_for_training(raw_data, tagset, c_window, glove, torch_emb, p
                 state.shift(s)
 
             #pad
-            w_stack = [w.word for w in s.stack]
-            w_stack = state.pad(w_stack, c_window, "token")
-            p_stack = [p.pos for p in s.stack]
-            p_stack = state.pad(p_stack, c_window, "postag")
+            w_stack = [s.stack[len(s.stack)-1].word, s.stack[len(s.stack)-2].word]#[w.word for w in s.stack]
+            #w_stack = state.pad(w_stack, c_window, "token")
+            p_stack = [s.stack[len(s.stack)-1].pos, s.stack[len(s.stack)-2].pos]#[p.pos for p in s.stack]
+            #p_stack = state.pad(p_stack, c_window, "postag")
 
-            w_buffer = [w.word for w in s.parse_buffer]
-            w_buffer = state.pad(w_buffer, c_window, "token")
-            p_buffer = [p.pos for p in s.parse_buffer]
-            p_buffer = state.pad(p_buffer, c_window, "postag")
+            w_buffer = [s.parse_buffer[0].word, s.parse_buffer[1].word]#[w.word for w in s.parse_buffer]
+            #w_buffer = state.pad(w_buffer, c_window, "token")
+            p_buffer = [s.parse_buffer[0].pos, s.parse_buffer[1].pos]#[p.pos for p in s.parse_buffer]
+            #p_buffer = state.pad(p_buffer, c_window, "postag")
 
             w = w_stack + w_buffer
             w_emb = glove.get_vecs_by_tokens(w, lower_case_backup=True)
@@ -73,19 +73,25 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
                     model, tag_set_idx2name, type):
     predictions = []
     for row in hidden_data:
-        s = state.ParseState([],row,[])
+        s = state.ParseState([state.Token(0,"[PAD]","NULL") for x in range(c_window)],row,[])
         deps_predicted = []
         while not state.is_final_state(s, c_window):
-            w_stack = [w.word for w in s.stack]
-            w_stack = state.pad(w_stack, c_window, "token")
-            p_stack = [p.pos for p in s.stack]
-            p_stack = state.pad(p_stack, c_window, "postag")
-
-            w_buffer = [w.word for w in s.parse_buffer]
-            w_buffer = state.pad(w_buffer, c_window, "token")
-            p_buffer = [p.pos for p in s.parse_buffer]
-            p_buffer = state.pad(p_buffer, c_window, "postag")
-
+            w_stack = [s.stack[len(s.stack)-1].word, s.stack[len(s.stack)-2].word]#[w.word for w in s.stack]
+            #w_stack = state.pad(w_stack, c_window, "token")
+            p_stack = [s.stack[len(s.stack)-1].pos, s.stack[len(s.stack)-2].pos]#[p.pos for p in s.stack]
+            #p_stack = state.pad(p_stack, c_window, "postag")
+            try:
+                w_buffer = [s.parse_buffer[0].word, s.parse_buffer[1].word]#[w.word for w in s.parse_buffer]
+                #w_buffer = state.pad(w_buffer, c_window, "token")
+                p_buffer = [s.parse_buffer[0].pos, s.parse_buffer[1].pos]#[p.pos for p in s.parse_buffer]
+                #p_buffer = state.pad(p_buffer, c_window, "postag")
+                print("good")
+                print("stk",[w.word for w in s.stack],"\n",[p.pos for p in s.stack],"\n")
+                print("bff",[w.word for w in s.parse_buffer],"\n",[p.pos for p in s.parse_buffer],"\n")
+            except:
+                print("bad")
+                print("stk",[w.word for w in s.stack],"\n",[p.pos for p in s.stack],"\n")
+                print("bff",[w.word for w in s.parse_buffer],"\n",[p.pos for p in s.parse_buffer],"\n")
             w = w_stack + w_buffer
             w_emb = glove.get_vecs_by_tokens(w, lower_case_backup=True)
             # mean representation
