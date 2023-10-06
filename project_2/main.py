@@ -19,7 +19,7 @@ np.random.seed(1419615)
 
 def main():
     #load data
-    complete_data = dataloader.load_data("./data/dev.txt")
+    complete_data = dataloader.load_data("./data/train.txt")
     pos_set, pos_set_idx2name, pos_set_name2idx = dataloader.load_pos_set("./data/pos_set.txt")
     tagset, tag_set_idx2name, tag_set_name2idx = dataloader.load_tagset("./data/tagset.txt")
 
@@ -46,7 +46,7 @@ def main():
         # Torch embeddings
         torch_emb = nn.Embedding(NUMBER_OF_POSTAGS, dim)
         
-        train_mean, train_concat, labels = prepare_vectors_for_training(data, tagset=tagset,
+        train_mean, train_concat, labels = prepare_vectors_for_training(deepcopy(data), tagset=tagset,
                                                         c_window=C_WINDOW, glove=glove,
                                                         torch_emb=torch_emb,
                                                         pos_set_name2idx=pos_set_name2idx,

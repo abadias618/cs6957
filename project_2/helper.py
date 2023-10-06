@@ -146,3 +146,67 @@ def parse_n_predict(hidden_data, tagset, c_window, glove, torch_emb, pos_set_nam
         predictions.append([deps_predicted,s.dependencies])
     return predictions 
 
+def prepare_vecs_for_extra_cred(raw_data, tagset, c_window, glove, torch_emb, pos_set_name2idx, tag_set_name2idx):
+    train = []
+    labels = []
+    for row in raw_data:
+        s = state.ParseState([],row[0],[])
+        for action in row[1]:
+            if action not in tagset:
+                raise Exception()
+            # check for action validity among all tagset
+            if not state.is_action_valid(s, action):
+                for act in tagset:
+                    if state.is_action_valid(s, act):
+                        action = act
+                        break
+            # If after all there's nothing still, break        
+            if not state.is_action_valid(s, action):
+                print("emergency break bad training file, an action is not valid")
+                break
+            a = action.split("_")
+            
+            if  len(a) > 1:
+                if a[1] == "L":
+                    state.left_arc(s, action)
+                elif a[1] == "R":   
+                    state.right_arc(s, action)
+            else:
+                state.shift(s)
+
+            #pad
+            w_stack = [w.word for w in s.stack]
+            w_stack = state.pad(w_stack, c_window, "token")
+            p_stack = [p.pos for p in s.stack]
+            p_stack = state.pad(p_stack, c_window, "postag")
+
+            w_buffer = [w.word for w in s.parse_buffer]
+            w_buffer = state.pad(w_buffer, c_window, "token")
+            p_buffer = [p.pos for p in s.parse_buffer]
+            p_buffer = state.pad(p_buffer, c_window, "postag")
+
+            w = w_stack + w_buffer
+            w_emb = glove.get_vecs_by_tokens(w, lower_case_backup=True)
+            # mean representation
+            w_emb_mean = torch.mean(w_emb, 0)
+            # concat representation
+            w_emb_concat = w_emb[0]
+            for i in range(1,len(w_emb)):
+                w_emb_concat = torch.cat((w_emb_concat, w_emb[i]),0)
+
+            
+            p = p_stack + p_buffer
+            p = [pos_set_name2idx[tag] for tag in p]
+            p_emb = torch_emb(torch.Tensor(p).to(torch.int64))
+            # mean representation
+            p_emb_mean = torch.mean(p_emb, 0)
+            # concat representation
+            p_emb_concat = p_emb[0]
+            for i in range(1,len(p_emb)):
+                p_emb_concat = torch.cat((p_emb_concat, p_emb[i]),0)
+
+            # put vecs together
+            labels.append(tag_set_name2idx[action])
+            train.append(torch.add(w_emb_mean, p_emb_mean))
+
+    return train_mean, train_concat, labels
