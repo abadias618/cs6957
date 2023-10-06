@@ -1,7 +1,7 @@
 from scripts import dataloader
-from scripts import state
+from scripts import state_extra
 from scripts import evaluate
-from helper import *
+from helper_extra import *
 from Mean import *
 from Concat import *
 import numpy as np
@@ -27,7 +27,7 @@ def main():
     #put data into objs
     for row in complete_data[:]:
         tokens = \
-        [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
+        [state_extra.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         data.append([tokens, row[2]])
 
     C_WINDOW = 2
@@ -44,7 +44,7 @@ def main():
     # Torch embeddings
     torch_emb = nn.Embedding(NUMBER_OF_POSTAGS, dim)
     
-    train_mean, train_concat, labels = prepare_vectors_for_training(data, tagset=tagset,
+    train_mean, train_concat, labels = prepare_vecs_for_extra_cred(data, tagset=tagset,
                                                     c_window=C_WINDOW, glove=glove,
                                                     torch_emb=torch_emb,
                                                     pos_set_name2idx=pos_set_name2idx,
@@ -63,7 +63,7 @@ def main():
     #put data into objs
     for row in test_data[:]:
         tokens = \
-        [state.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
+        [state_extra.Token(i+1,input_token,pos_tag) for i, (input_token, pos_tag) in enumerate(zip(row[0], row[1]))]
         obj_test_data.append(tokens)
         word_lists.append(row[0])
         gold_actions.append(row[2])

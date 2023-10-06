@@ -19,7 +19,7 @@ np.random.seed(1419615)
 
 def main():
     #load data
-    complete_data = dataloader.load_data("./data/train.txt")
+    complete_data = dataloader.load_data("./data/dev.txt")
     pos_set, pos_set_idx2name, pos_set_name2idx = dataloader.load_pos_set("./data/pos_set.txt")
     tagset, tag_set_idx2name, tag_set_name2idx = dataloader.load_tagset("./data/tagset.txt")
 
