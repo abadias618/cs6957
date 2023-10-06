@@ -11,7 +11,16 @@ def prepare_vectors_for_training(raw_data, tagset, c_window, glove, torch_emb, p
         for action in row[1]:
             if action not in tagset:
                 raise Exception()
-            
+            # check for action validity among all tagset
+            if not state.is_action_valid(s, action):
+                for act in tagset:
+                    if state.is_action_valid(s, act):
+                        action = act
+                        break
+            # If after all there's nothing still, break        
+            if not state.is_action_valid(s, action):
+                print("emergency break bad training file, an action is not valid")
+                break
             a = action.split("_")
             
             if  len(a) > 1:

@@ -53,10 +53,10 @@ def main():
                                                         tag_set_name2idx=tag_set_name2idx)
         #READY DATA
         dataset_mean = TensorDataset(torch.stack(train_mean), torch.tensor(labels))
-        dataloader_mean = DataLoader(dataset_mean, batch_size = 512, shuffle=False)
+        dataloader_mean = DataLoader(dataset_mean, batch_size = 1024, shuffle=False)
 
         dataset_concat = TensorDataset(torch.stack(train_concat), torch.tensor(labels))
-        dataloader_concat = DataLoader(dataset_concat, batch_size = 512*4, shuffle=False)
+        dataloader_concat = DataLoader(dataset_concat, batch_size = 1024*4, shuffle=False)
 
         test_data = dataloader.load_data("./data/test.txt")
         obj_test_data = [] #tokens-dependencies-ParseState
