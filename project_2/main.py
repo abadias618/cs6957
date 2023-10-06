@@ -91,40 +91,40 @@ def main():
             optimizer_concat = torch.optim.Adam(model_concat.parameters(), lr=lr)
 
             # train
-            #model_mean = train_mean_model(dataloader_mean, model_mean, loss_function, optimizer_mean, epochs=1)
+            model_mean = train_mean_model(dataloader_mean, model_mean, loss_function, optimizer_mean, epochs=1)
             model_concat = train_concat_model(dataloader_concat, model_concat, loss_function, optimizer_concat, epochs=1)
             
             # UAS - LAS
-            #m_predictions_test = parse_n_predict(hidden_data=deepcopy(obj_test_data), tagset=tagset,
-            #                            c_window=C_WINDOW, glove=glove,
-            #                            torch_emb=torch_emb,
-            #                            pos_set_name2idx=pos_set_name2idx, model=model_mean,
-            #                            tag_set_idx2name=tag_set_idx2name, type="mean")
+            m_predictions_test = parse_n_predict(hidden_data=deepcopy(obj_test_data), tagset=tagset,
+                                        c_window=C_WINDOW, glove=glove,
+                                        torch_emb=torch_emb,
+                                        pos_set_name2idx=pos_set_name2idx, model=model_mean,
+                                        tag_set_idx2name=tag_set_idx2name, type="mean")
             c_predictions_test = parse_n_predict(hidden_data=deepcopy(obj_test_data), tagset=tagset,
                                         c_window=C_WINDOW, glove=glove,
                                         torch_emb=torch_emb,
                                         pos_set_name2idx=pos_set_name2idx, model=model_concat,
                                         tag_set_idx2name=tag_set_idx2name, type="concat")
 
-            #m_uas_las = evaluate.compute_metrics(word_lists, gold_actions, 
-            #                                [p[0] for p in m_predictions_test], C_WINDOW)
+            m_uas_las = evaluate.compute_metrics(word_lists, gold_actions, 
+                                            [p[0] for p in m_predictions_test], C_WINDOW)
             
             c_uas_las = evaluate.compute_metrics(word_lists, gold_actions, 
                                             [p[0] for p in c_predictions_test], C_WINDOW)
             
 
-            #print("mean model UAS-LAS", m_uas_las)
+            print("mean model UAS-LAS", m_uas_las)
             print("concat model UAS-LAS", c_uas_las)
             print("current lr", lr)
-            #f m_uas_las[1] > c_uas_las[1]:
-            #   if m_uas_las[1] > overall_score:
-            #       overall_score = m_uas_las[1]
-            #       best_model = model_mean
-            #       m_or_c = "mean"
-            #   elif c_uas_las[1] > overall_score:
-            #       overall_score = c_uas_las[1]
-            #       best_model = model_concat
-            #       m_or_c = "concat"
+            if m_uas_las[1] > c_uas_las[1]:
+                if m_uas_las[1] > overall_score:
+                    overall_score = m_uas_las[1]
+                    best_model = model_mean
+                    m_or_c = "mean"
+                elif c_uas_las[1] > overall_score:
+                    overall_score = c_uas_las[1]
+                    best_model = model_concat
+                    m_or_c = "concat"
             best_model = model_concat       
 
     model = best_model
