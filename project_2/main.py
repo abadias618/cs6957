@@ -124,8 +124,7 @@ def main():
                 elif c_uas_las[1] > overall_score:
                     overall_score = c_uas_las[1]
                     best_model = model_concat
-                    m_or_c = "concat"
-            best_model = model_concat       
+                    m_or_c = "concat"    
 
     model = best_model
 
