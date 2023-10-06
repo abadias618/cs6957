@@ -39,7 +39,7 @@ def main():
 
     overall_score = float('-inf')
     best_model = None
-    for gc in GLOVE_CONFIG:
+    for gc in GLOVE_CONFIG[0]:
         name = gc[0]
         dim = gc[1]
         
@@ -77,7 +77,7 @@ def main():
 
         
         m_or_c = None
-        for lr in [0.01, 0.001, 0.0001]:
+        for lr in [0.01, 0.001, 0.0001][2]:
 
             
 
