@@ -35,11 +35,11 @@ def main():
         data.append([tokens, row[2]])
 
     
-    GLOVE_CONFIG=[("6B",50),("6B", 300),("42B",300),("840B", 300)]
+    GLOVE_CONFIG=[("6B",50)]#,("6B", 300),("42B",300),("840B", 300)]
 
     overall_score = float('-inf')
     best_model = None
-    for gc in GLOVE_CONFIG[0]:
+    for gc in GLOVE_CONFIG:
         name = gc[0]
         dim = gc[1]
         
