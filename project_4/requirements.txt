@@ -1,0 +1,9 @@
+datasets
+evaluate
+transformers
+--upgrade transformers 
+scikit-learn
+sentencepiece
+torch --index-url https://download.pytorch.org/whl/cu118
+protobuf
+accelerate
