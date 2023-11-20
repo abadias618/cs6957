@@ -1,0 +1,1 @@
+scp -r ./project_4 u1419615@notchpeak2.chpc.utah.edu:/uufs/chpc.utah.edu/common/home/u1419615
