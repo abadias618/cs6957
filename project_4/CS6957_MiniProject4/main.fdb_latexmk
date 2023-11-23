@@ -6,7 +6,7 @@
   (generated)
   "main.bbl"
   "main.blg"
-["pdflatex"] 1700712122 "/home/abd/Documents/UofU-Fall2023/NLPdeeplearning/cs6957/project_4/CS6957_MiniProject4/main.tex" "main.pdf" "main" 1700712122
+["pdflatex"] 1700713572 "/home/abd/Documents/UofU-Fall2023/NLPdeeplearning/cs6957/project_4/CS6957_MiniProject4/main.tex" "main.pdf" "main" 1700713572
   "/etc/texmf/web2c/texmf.cnf" 1697753524 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/home/abd/Documents/UofU-Fall2023/NLPdeeplearning/cs6957/project_4/CS6957_MiniProject4/main.tex" 1699427700 1747 070b63b5c2291abecfa0e23dfb0768cd ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -243,12 +243,12 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1697753798 4379155 98693266ff65f58d9f98aff394de12d2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1697753807 2800629 bc5d863f419365bbec726f10be09c3f4 ""
   "explanation.tex" 1699427700 2445 c216ccb34efbc7998fe7e7dbe46ce023 ""
-  "main.aux" 1700712122 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
-  "main.bbl" 1700712121 2096 95d4a8c6ac932ee88394400b0ccc0774 "bibtex main"
+  "main.aux" 1700713572 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "main.bbl" 1700713571 2096 95d4a8c6ac932ee88394400b0ccc0774 "bibtex main"
   "main.out" 0 -1 0 "pdflatex"
   "main.tex" 1699427700 1747 070b63b5c2291abecfa0e23dfb0768cd ""
   "mp_bert.tex" 1699427700 7140 be2db533eb866beedea8b6fa6dc88b02 ""
-  "questions.tex" 1700712120 5027 e218c1f6aa5e756795d68e3a1b9acb76 ""
+  "questions.tex" 1700713571 5206 2be029daac0a9d26962e6a32d644931e ""
   (generated)
   "main.aux"
   "main.log"
