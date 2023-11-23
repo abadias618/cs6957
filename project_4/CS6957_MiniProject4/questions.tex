@@ -58,7 +58,16 @@ For simplicity, for the first two questions below, let us only consider the sett
 
 \begin{enumerate}
 \item\relax[5 points] If the input to layer norm is a $d$-dimensional vector, show that the result of layer norm will have a norm of $\sqrt{d}$.
+\begin{flushleft}
+    \[LayerNorm[x] = \frac{x - \bar{x}}{\sqrt{Var[x] + \epsilon}} * \gamma + \beta\]
+    Given that thr right-hand-side of ($*$) will become trivial since it will just multiply
+    the left-hand-side by $1$. We focus on the left-hand-side of ($*$).
+    \[\bar{x} = \frac{1}{d}\sum_{i=1}^{d}x_i\]
+    \[Var[x] = \sqrt[]{\frac{1}{d}\sum_{i=1}^{d}(x_i - \bar{x})^2}\]
 
+    If we replace these into the original equation we can observe that the denominator will
+    end up determining the norm, only when $\gamma + \beta$ are trivial.
+\end{flushleft}
 \item\relax[10 points]  If we have two dimensional input vectors (i.e., $d=2$), show that the layer norm operator will map any vector whose elements are \emph{different} to either the vector $[-1, 1]$ or $[1, -1]$.
 
 \item\relax[5 points] Now suppose the $\gamma$ and the $\beta$ can be any real numbers. How will your analysis for the above questions change? 

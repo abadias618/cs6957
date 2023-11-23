@@ -1,0 +1,43 @@
+\begin{thebibliography}{4}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Devlin et~al.(2019)Devlin, Chang, Lee, and
+  Toutanova]{devlin-etal-2019-bert}
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova.
+\newblock {BERT}: Pre-training of deep bidirectional transformers for language
+  understanding.
+\newblock In Jill Burstein, Christy Doran, and Thamar Solorio, editors,
+  \emph{Proceedings of the 2019 Conference of the North {A}merican Chapter of
+  the Association for Computational Linguistics: Human Language Technologies,
+  Volume 1 (Long and Short Papers)}, pages 4171--4186, Minneapolis, Minnesota,
+  June 2019. Association for Computational Linguistics.
+\newblock \doi{10.18653/v1/N19-1423}.
+\newblock URL \url{https://aclanthology.org/N19-1423}.
+
+\bibitem[Dagan et~al.(2005)Dagan, Glickman, and Magnini]{dagan2005pascal}
+Ido Dagan, Oren Glickman, and Bernardo Magnini.
+\newblock The pascal recognising textual entailment challenge.
+\newblock In \emph{Machine learning challenges workshop}, pages 177--190.
+  Springer, 2005.
+
+\bibitem[Socher et~al.(2013)Socher, Perelygin, Wu, Chuang, Manning, Ng, and
+  Potts]{socher-etal-2013-recursive}
+Richard Socher, Alex Perelygin, Jean Wu, Jason Chuang, Christopher~D. Manning,
+  Andrew Ng, and Christopher Potts.
+\newblock Recursive deep models for semantic compositionality over a sentiment
+  treebank.
+\newblock In David Yarowsky, Timothy Baldwin, Anna Korhonen, Karen Livescu, and
+  Steven Bethard, editors, \emph{Proceedings of the 2013 Conference on
+  Empirical Methods in Natural Language Processing}, pages 1631--1642, Seattle,
+  Washington, USA, October 2013. Association for Computational Linguistics.
+\newblock URL \url{https://aclanthology.org/D13-1170}.
+
+\bibitem[Ba et~al.(2016)Ba, Kiros, and Hinton]{ba2016layer}
+Jimmy~Lei Ba, Jamie~Ryan Kiros, and Geoffrey~E. Hinton.
+\newblock Layer normalization, 2016.
+
+\end{thebibliography}
